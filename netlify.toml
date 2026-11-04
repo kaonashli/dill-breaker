@@ -1,0 +1,14 @@
+# Netlify build settings (picked up automatically when the repo is connected)
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Single-page app: send every URL to index.html so React Router can handle it
+# (without this, refreshing /games or /profile gives a 404)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

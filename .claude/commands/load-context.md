@@ -49,4 +49,5 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - No forgot-password flow yet.
 
 ## Status
-- v0.1.0 written (see CHANGELOG.md). The user has run the schema and set themselves as admin. Publishing to GitHub is pending Git being installed.
+- v0.1.0 released (see CHANGELOG.md). The user has run the schema and set themselves as admin.
+- GitHub: https://github.com/kaonashli/dill-breaker (branch `main`, tag + release `v0.1.0`). Commit as `kaonashli` / ashley.boily@hotmail.com (set in the repo's local git config). No `gh` CLI installed; releases are created on the GitHub website.
