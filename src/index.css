@@ -205,7 +205,11 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 16px; }
 .auth-theme { position: fixed; top: 12px; right: 12px; }
 .auth-card { width: 100%; max-width: 400px; padding: 1.75rem; }
-.auth-brand { font-weight: 700; font-size: 1.2rem; margin-bottom: 0.75rem; }
+.auth-brand { font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.auth-intro {
+  color: var(--text-2); font-size: 0.9rem; margin: 0 0 1.25rem;
+  padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+}
 .auth-switch { text-align: center; margin-top: 1rem; color: var(--text-2); }
 .avatar-picker { display: flex; align-items: center; gap: 0.75rem; }
 

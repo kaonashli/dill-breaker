@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+### Security
+- **Friend search can no longer list every user.** Typing `%` or `_` used to match
+  all usernames. Search now matches usernames that *start with* your text
+  (min 3 characters, max 10 results), and runs in the database. (`migrations/002`)
+- **Profiles are now private.** You can only see your own profile, your friends,
+  people with a pending friend request with you, and players in games you can see.
+  Admins still see everyone.
+
+### Changed
+- **Login and sign-up pages** now include a short description of what Dill Breaker is.
+- **Dark mode by default** for first-time visitors and new accounts (`migrations/003`).
+  You can still switch to light or system in the top bar or on your Profile.
+
+### Deployment
+- Live at [dill-breaker.netlify.app](https://dill-breaker.netlify.app). Netlify
+  config (`netlify.toml`) handles page refreshes on any URL.
+
 ## v0.1.0 (2026-11-03): First release 🥒
 
 The first version of Dill Breaker: accounts, friends, game and match logging,

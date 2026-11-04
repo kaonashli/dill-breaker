@@ -4,7 +4,9 @@ A pickleball score-keeping app. Log your games and matches, add friends, track
 "pickle pals" who don't have an account, and see your stats on a dashboard you
 can rearrange, side by side with up to four other players.
 
-Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage).
+**Live app: [dill-breaker.netlify.app](https://dill-breaker.netlify.app)**
+
+Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage), hosted on **Netlify**.
 
 ---
 
@@ -59,7 +61,9 @@ Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage).
 1. In your Supabase project, open **SQL Editor → New query**.
 2. Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**.
    This creates the tables, security policies, triggers and the `avatars` storage bucket.
-3. Recommended: under **Authentication → Sign In / Providers → Email**, turn on
+3. Then run each file in [`supabase/migrations/`](supabase/migrations/) in number order
+   (`002_...`, `003_...`). These are changes made after the first release.
+4. Recommended: under **Authentication → Sign In / Providers → Email**, turn on
    **Confirm email** and set a minimum password length of at least 8.
 
 ### 3. Configure environment variables
@@ -148,6 +152,9 @@ have it, then check it with `hasPermission('your.key')` (from `useAuth()`) in Re
 or with `public.has_permission('your.key')` in an SQL policy.
 
 ### Who can see what
+- You can see profiles of yourself, your friends, people with a pending friend request
+  with you, and people in games you can see. Username search only matches usernames
+  that start with what you type (min 3 characters).
 - You can see games that you or one of your accepted friends played in
 - Only the person who logged a game (or an admin) can edit or delete it
 - When logging a game you can add yourself, your accepted friends, or your own pickle pals
@@ -159,6 +166,16 @@ or with `public.has_permission('your.key')` in an SQL policy.
 | `npm run dev` | Start the development server |
 | `npm run build` | Build for production into `dist/` |
 | `npm run preview` | Serve the production build locally |
+
+## Deployment
+The live site is hosted on Netlify and connected to this GitHub repo: every push to
+`main` redeploys automatically. Build settings and the single-page-app redirect live in
+[`netlify.toml`](netlify.toml). `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set
+under Netlify → Project configuration → Environment variables. Don't mark them as secret:
+they're public by design and end up in the site's JavaScript.
+
+In Supabase → Authentication → URL Configuration, the Site URL is
+`https://dill-breaker.netlify.app`, with `http://localhost:5173` also allowed for local development.
 
 ## Known limitations
 - If two friends both log the same game, it's counted twice

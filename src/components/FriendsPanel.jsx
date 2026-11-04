@@ -41,15 +41,12 @@ export default function FriendsPanel({ people }) {
   async function search(e) {
     e.preventDefault()
     const q = term.trim()
-    if (q.length < 2) return setMessage({ type: 'error', text: 'Type at least 2 characters.' })
+    if (q.length < 3) return setMessage({ type: 'error', text: 'Type at least 3 characters of their username.' })
     setMessage(null)
-    const { data } = await supabase
-      .from('profiles')
-      .select(PROFILE_COLS)
-      .ilike('username', `%${q}%`)
-      .neq('id', user.id)
-      .order('username')
-      .limit(10)
+    // search_users (in the database) matches usernames that START WITH the text.
+    // It treats % and _ as normal characters, so it can't be used to list everyone.
+    const { data, error } = await supabase.rpc('search_users', { term: q })
+    if (error) return setMessage({ type: 'error', text: error.message })
     setResults(data || [])
   }
 

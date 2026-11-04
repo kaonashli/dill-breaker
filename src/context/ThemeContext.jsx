@@ -4,11 +4,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 // isDark is the *resolved* value (what's actually showing), used by the charts.
 const ThemeContext = createContext(null)
 
+// First-time visitors (nothing saved yet) get dark mode
+const DEFAULT_THEME = 'dark'
+
 function readStoredTheme() {
   try {
-    return localStorage.getItem('theme') || 'system'
+    return localStorage.getItem('theme') || DEFAULT_THEME
   } catch {
-    return 'system'
+    return DEFAULT_THEME
   }
 }
 
