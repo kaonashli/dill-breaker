@@ -80,29 +80,66 @@ export function NotificationsProvider({ children }) {
   }, [user.id, showToast])
 
   useEffect(() => {
-    refresh()
+    let channel = null
+    let stopped = false
+    let retryTimer = null
 
-    // Instant updates when a request is sent to me
-    const channel = supabase
-      .channel(`friend-requests-${user.id}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'friendships', filter: `addressee_id=eq.${user.id}` },
-        () => refresh()
-      )
-      .subscribe()
+    // --- 1) Live updates (Supabase Realtime) -------------------------
+    // Phones pause the connection when the app is in the background, so if
+    // it errors or closes we reconnect, and every (re)connect does a catch-up check.
+    function connect() {
+      if (stopped) return
+      const old = channel
+      const current = supabase.channel(`friend-requests-${user.id}-${Date.now()}`)
+      channel = current
+      if (old) supabase.removeChannel(old) // its 'CLOSED' is ignored below (not current anymore)
+      current
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'friendships', filter: `addressee_id=eq.${user.id}` },
+          () => refresh()
+        )
+        .subscribe((status) => {
+          if (stopped || current !== channel) return // an old connection we replaced on purpose
+          if (status === 'SUBSCRIBED') refresh() // catch up on anything missed while disconnected
+          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            clearTimeout(retryTimer)
+            retryTimer = setTimeout(connect, 5000) // try again in 5s
+          }
+        })
+    }
+    connect()
 
-    // Backup checks: coming back to the tab, and every minute
-    const onFocus = () => refresh()
-    window.addEventListener('focus', onFocus)
-    const timer = setInterval(refresh, 60000)
+    // --- 2) Re-check when the app comes back on screen ----------------
+    // 'visibilitychange' is the one phones reliably fire (switching apps,
+    // unlocking the screen); 'focus' covers desktop; 'online' = Wi-Fi/data back.
+    function onVisible() {
+      if (document.visibilityState === 'visible') {
+        refresh()
+        if (!channel || channel.state !== 'joined') connect()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    window.addEventListener('focus', onVisible)
+    window.addEventListener('online', onVisible)
+    window.addEventListener('pageshow', onVisible) // back/forward cache on iPhone
+
+    // --- 3) Safety net: check every 20s while the page is visible ------
+    const timer = setInterval(() => {
+      if (document.visibilityState === 'visible') refresh()
+    }, 20000)
 
     // Browsers block sound until the first tap/click
     window.addEventListener('pointerdown', unlockAudio, { once: true })
 
     return () => {
-      supabase.removeChannel(channel)
-      window.removeEventListener('focus', onFocus)
+      stopped = true
+      clearTimeout(retryTimer)
+      if (channel) supabase.removeChannel(channel)
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('focus', onVisible)
+      window.removeEventListener('online', onVisible)
+      window.removeEventListener('pageshow', onVisible)
       window.removeEventListener('pointerdown', unlockAudio)
       clearInterval(timer)
     }

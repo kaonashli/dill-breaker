@@ -21,6 +21,12 @@
   on the login / sign-up pages (replaces the 🥒 emoji).
 - **Games tab icon** on phones is now a pickleball paddle.
 
+### Fixed
+- **Friend request notifications on phones** no longer need a page refresh: the
+  app re-checks when it comes back on screen (switching apps, unlocking), when
+  the connection returns, and every 20 seconds while open, and reconnects the
+  live connection if the phone drops it.
+
 ## v0.2.0 (2026-11-05): Profiles, Activity feed & mobile app feel 📱
 
 Player profile pages, an activity feed of your friends' games, a phone layout
