@@ -10,6 +10,14 @@ const PATHS = {
       <path d="M12 15v2" />
     </>
   ),
+  // trophy: cup with handles, stem and base
+  trophy: (
+    <>
+      <path d="M8 4h8v5a4 4 0 0 1-8 0V4z" />
+      <path d="M8 6H5.5a2.5 2.5 0 0 0 2.6 4.5M16 6h2.5a2.5 2.5 0 0 1-2.6 4.5" />
+      <path d="M12 13v4M8.5 20h7M9.5 17h5" />
+    </>
+  ),
   // gear (settings): a cog with teeth around a center hole
   gear: (
     <>

@@ -1,5 +1,23 @@
 import { Link } from 'react-router-dom'
 
+// A filled gold trophy for the Won badge (looks like the trophy emoji, but drawn)
+function Trophy({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className="trophy">
+      {/* handles */}
+      <path d="M7 5.5H4.2a.7.7 0 0 0-.7.8c.3 2.8 2 4.6 4.6 5" fill="none" stroke="#a86f00" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M17 5.5h2.8a.7.7 0 0 1 .7.8c-.3 2.8-2 4.6-4.6 5" fill="none" stroke="#a86f00" strokeWidth="2.2" strokeLinecap="round" />
+      {/* cup */}
+      <path d="M6.5 3h11v5.5a5.5 5.5 0 0 1-11 0V3z" fill="#ffc928" stroke="#6b4500" strokeWidth="1.4" />
+      {/* shine on the cup */}
+      <path d="M9 4.8v3.6a3 3 0 0 0 1.2 2.4" fill="none" stroke="#ffe07a" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+      {/* stem + base */}
+      <path d="M10.6 13.6h2.8l.5 3.4h-3.8z" fill="#c98a00" stroke="#6b4500" strokeWidth="1" strokeLinejoin="round" />
+      <rect x="7.5" y="17" width="9" height="3.6" rx="1" fill="#ffc928" stroke="#6b4500" strokeWidth="1.4" />
+    </svg>
+  )
+}
+
 // Pieces shared by the activity feed and the game/match details page.
 // A "group" = { matchId, match, games: [game, ...] } (a single game has matchId null).
 
@@ -125,7 +143,7 @@ export function TeamRows({ group, meId }) {
         return (
           <div key={team} className={`feed-team ${won ? 'winner' : ''} ${lost ? 'loser' : ''}`}>
             <span className="feed-team-names"><TeamNames game={first} team={team} meId={meId} /></span>
-            {won && <span className="won-badge">🏆 Won</span>}
+            {won && <span className="won-badge"><Trophy /> Won</span>}
             <span className="feed-score">{score ?? '–'}</span>
           </div>
         )

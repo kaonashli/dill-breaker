@@ -713,11 +713,13 @@ textarea {
 .feed-team.loser { opacity: 0.65; }
 .feed-team-names { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .won-badge {
-  flex-shrink: 0;
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.25rem;
   font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
   padding: 0.15rem 0.5rem; border-radius: 999px;
   background: var(--accent); color: var(--accent-text);
 }
+/* filled gold trophy in the Won badge, slightly bigger than the text */
+.won-badge .trophy { flex-shrink: 0; margin: -2px 0; }
 .feed-score { font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
 .feed-games { display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
 

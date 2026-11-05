@@ -21,7 +21,8 @@
   (no paddle, member-since or stats). Admins still see everything, and the
   View as switch gains a "Me" option to see a profile as a regular user.
 - **Icons instead of emojis** for the private notes lock, the add-photo camera
-  the "pick another title" dice and the settings gear.
+  the "pick another title" dice, the settings gear, and a filled gold trophy
+  (with a dark outline) in the Won badge.
 - **Toggle buttons** (Singles / Doubles, Win / Loss / Just for fun, etc.) are
   now equal widths for an even look on desktop.
 - **Sign out** moved to the bottom of your own profile page (out of settings).
@@ -135,7 +136,7 @@ that feels like a real app, and tighter privacy.
 ### New
 - **Activity feed** (`/feed`): every game and match you or your friends played,
   newest first. Matches show as one card with the games won by each side and every
-  game's score. The winning side gets a 🏆 **Won** badge and highlight; the losing
+  game's score. The winning side gets a **Won** badge (with a trophy icon) and highlight; the losing
   side is dimmed. Opens from the Games tab (with a switch to "My games") or
   Activity on desktop.
 - **Player profile pages** (`/u/username`): photo, name, member since, stat tiles
