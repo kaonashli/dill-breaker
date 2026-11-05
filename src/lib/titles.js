@@ -1,5 +1,5 @@
 // Punny default titles for games and matches, based on the time of day played.
-// One is picked at random; the 🎲 button in the form picks another.
+// One is picked at random; the dice button in the form picks another.
 
 const TITLES = {
   earlyMorning: [ // 5am - 8am

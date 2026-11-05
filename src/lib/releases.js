@@ -9,7 +9,7 @@ export const RELEASES = [
     date: '2026-11-05',
     title: 'Photos, stories & your own paddle',
     notes: [
-      'Give your games and matches a title and description. New ones start with a punny title based on the time of day (tap 🎲 for another).',
+      'Give your games and matches a title and description. New ones start with a punny title based on the time of day (tap the dice button for another).',
       'Add up to 5 photos to a game or match. In the activity feed, swipe sideways to see them all.',
       'Keep private notes on any game. Only you can ever see them.',
       'Tap any game in the activity feed to see all the details and photos.',

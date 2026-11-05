@@ -25,7 +25,7 @@ export function StoryFields({ value, onChange, onRerollTitle }) {
           />
           {onRerollTitle && (
             <button type="button" className="btn btn-sm" onClick={onRerollTitle} title="Pick another title" aria-label="Pick another title">
-              🎲
+              <Icon name="dice" size={18} />
             </button>
           )}
         </div>

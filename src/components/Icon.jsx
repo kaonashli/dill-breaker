@@ -10,6 +10,15 @@ const PATHS = {
       <path d="M12 15v2" />
     </>
   ),
+  // dice: rounded square with five pips (filled dots)
+  dice: (
+    <>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="3.5" />
+      {[[8.5, 8.5], [15.5, 8.5], [12, 12], [8.5, 15.5], [15.5, 15.5]].map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.3" fill="currentColor" stroke="none" />
+      ))}
+    </>
+  ),
   // camera: body with a bump on top + lens
   camera: (
     <>
