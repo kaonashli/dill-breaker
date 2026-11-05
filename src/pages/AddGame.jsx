@@ -7,7 +7,9 @@ import {
   GAME_WITH_PLAYERS, gameToRow, newGame, rowToGame, saveParticipants, validateGame,
 } from '../lib/games'
 import { friendlyError } from '../lib/errors'
+import { saveNotesAndPhotos, storyColumns, useExtras } from '../lib/extras'
 import GameFields from '../components/GameFields'
+import { NotesPhotosFields, StoryFields } from '../components/ExtrasFields'
 
 // Used for both /games/new and /games/:id/edit
 export default function AddGame() {
@@ -23,6 +25,8 @@ export default function AddGame() {
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // title / description / private notes / photos (new games only; edit those on the game's page)
+  const story = useExtras(game.played_at)
 
   // When editing, load the game
   useEffect(() => {
@@ -58,6 +62,7 @@ export default function AddGame() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!isEdit && !story.extras.title.trim()) return setError('Give your game a title.')
     const problem = validateGame(game)
     if (problem) return setError(problem)
 
@@ -79,7 +84,7 @@ export default function AddGame() {
       } else {
         const { data, error: insertError } = await supabase
           .from('games')
-          .insert({ ...gameToRow(game), recorded_by: user.id })
+          .insert({ ...gameToRow(game), ...storyColumns(story.extras, game.played_at), recorded_by: user.id })
           .select('id')
           .single()
         if (insertError) throw insertError
@@ -89,7 +94,9 @@ export default function AddGame() {
           await supabase.from('games').delete().eq('id', data.id) // undo half-saved game
           throw err
         }
-        navigate('/')
+        const failed = await saveNotesAndPhotos(user.id, { gameId: data.id }, story.extras)
+        if (failed.length) window.alert(`Your game was saved, but the ${failed.join(' and ')} couldn't be saved. You can add them from the game's page.`)
+        navigate(`/activity/game/${data.id}`) // show the finished game
       }
     } catch (err) {
       setError(friendlyError(err))
@@ -117,7 +124,23 @@ export default function AddGame() {
         <p className="notice">Admin edit: "your" team means the team of the person who logged this game.</p>
       )}
       <form className="card" onSubmit={handleSubmit}>
+        {/* title + description first (new games only) */}
+        {!isEdit && (
+          <div className="story-top">
+            <StoryFields value={story.extras} onChange={story.change} onRerollTitle={story.reroll} />
+          </div>
+        )}
         <GameFields game={game} onChange={handleChange} people={peopleForSelect} />
+        {isEdit ? (
+          <p className="muted small edit-story-hint">
+            Title, description, photos and notes are edited on the{' '}
+            <Link to={`/activity/game/${id}`}>game's page</Link>.
+          </p>
+        ) : (
+          <div className="extras-spacer">
+            <NotesPhotosFields value={story.extras} onChange={story.change} />
+          </div>
+        )}
         {error && <p className="form-error">{error}</p>}
         <div className="form-actions sticky-actions">
           <Link to={isEdit ? '/games' : '/'} className="btn btn-ghost">Cancel</Link>

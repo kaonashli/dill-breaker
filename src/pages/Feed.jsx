@@ -1,20 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { usePeople } from '../lib/people'
 import { friendlyError } from '../lib/errors'
+import { loadPhotos } from '../lib/photos'
 import Avatar from '../components/Avatar'
 import GamesTabs from '../components/GamesTabs'
+import CourtIcon from '../components/CourtIcon'
+import PhotoCarousel from '../components/PhotoCarousel'
+import {
+  FEED_COLUMNS, MatchGameScores, TeamRows, groupStory, playedSentence, timeAgo,
+} from '../components/GameSummary'
 
 const PAGE_SIZE = 40 // participant rows per "load more"
-
-const FEED_COLUMNS = `
-  id, match_id, game_number, played_at, game_type, location, sex,
-  team1_score, team2_score, winning_team, fun_rating, recorded_by,
-  recorder:profiles!games_recorded_by_fkey ( display_name, username, avatar_url ),
-  game_participants ( team, user_id, pickle_pal_id, profiles ( display_name, username ), pickle_pals ( name ) )
-`
 
 // Newest first; games in the same match stay together in order
 function sortGames(list) {
@@ -32,7 +31,7 @@ function groupIntoItems(games) {
   for (const game of games) {
     const last = items[items.length - 1]
     if (game.match_id && last && last.matchId === game.match_id) last.games.push(game)
-    else items.push({ key: game.match_id || game.id, matchId: game.match_id, games: [game] })
+    else items.push({ key: game.match_id || game.id, matchId: game.match_id, match: game.match, games: [game] })
   }
   return items
 }
@@ -42,6 +41,7 @@ export default function Feed() {
   const { user } = useAuth()
   const people = usePeople()
   const [games, setGames] = useState([])
+  const [photos, setPhotos] = useState({}) // { [gameId or matchId]: [photo, ...] }
   const [offset, setOffset] = useState(0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -69,7 +69,7 @@ export default function Feed() {
           .range(from, from + PAGE_SIZE - 1)
         if (rowsError) throw rowsError
 
-        // 2) Details for games we haven't shown yet
+        // 2) Details (and photos) for games we haven't shown yet
         const newIds = [...new Set(rows.map((r) => r.game_id))].filter((id) => !loadedIds.current.has(id))
         if (newIds.length > 0) {
           const { data: details, error: detailsError } = await supabase
@@ -84,6 +84,12 @@ export default function Feed() {
             details.forEach((g) => byId.set(g.id, g))
             return sortGames([...byId.values()])
           })
+
+          const newPhotos = await loadPhotos({
+            gameIds: details.filter((g) => !g.match_id).map((g) => g.id),
+            matchIds: [...new Set(details.map((g) => g.match_id).filter(Boolean))],
+          })
+          setPhotos((prev) => ({ ...prev, ...newPhotos }))
         }
 
         setOffset(from + rows.length)
@@ -102,6 +108,7 @@ export default function Feed() {
     if (people.loading) return
     loadedIds.current = new Set()
     setGames([])
+    setPhotos({})
     setDone(false)
     loadPage(0)
   }, [people.loading, loadPage])
@@ -124,7 +131,7 @@ export default function Feed() {
 
       <ul className="feed">
         {items.map((item) => (
-          <FeedItem key={item.key} item={item} meId={user.id} />
+          <FeedItem key={item.key} item={item} photos={photos[item.key]} meId={user.id} />
         ))}
       </ul>
 
@@ -136,107 +143,58 @@ export default function Feed() {
   )
 }
 
-// ---------------------------------------------------------------------
-
-// "5m ago", "3h ago", "Yesterday", "Nov 3", "Nov 3, 2025"
-function timeAgo(dateString) {
-  const date = new Date(dateString)
-  const minutes = Math.round((Date.now() - date) / 60000)
-  if (minutes < 1) return 'Just now'
-  if (minutes < 60) return `${minutes}m ago`
-  if (minutes < 24 * 60) return `${Math.round(minutes / 60)}h ago`
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday'
-  const sameYear = date.getFullYear() === new Date().getFullYear()
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) })
-}
-
-// Names on one team, e.g. "You & Sam". Account holders link to their profile.
-function TeamNames({ game, team, meId }) {
-  const players = game.game_participants.filter((p) => p.team === team)
-  if (players.length === 0) return <span className="muted">Not recorded</span>
-  return players.map((p, i) => {
-    let name
-    if (p.user_id === meId) name = <strong>You</strong>
-    else if (p.profiles) name = <Link to={`/u/${p.profiles.username}`} className="person-link">{p.profiles.display_name}</Link>
-    else name = p.pickle_pals?.name || 'Unknown'
-    return (
-      <span key={i}>
-        {i > 0 && ' & '}
-        {name}
-      </span>
-    )
-  })
-}
-
-function Score({ game, team }) {
-  const score = team === 1 ? game.team1_score : game.team2_score
-  return <span className="feed-score">{score ?? '–'}</span>
-}
-
-function FeedItem({ item, meId }) {
+// One card in the feed. Tapping it (anywhere that isn't a link) opens the details page.
+function FeedItem({ item, photos, meId }) {
+  const navigate = useNavigate()
   const first = item.games[0]
-  const recorder = first.recorder
   const isMatch = Boolean(item.matchId)
-  const recorderName = first.recorded_by === meId ? 'You' : recorder?.display_name || 'Someone'
+  const { recorder, rest } = playedSentence(item, meId)
+  const { title, description } = groupStory(item)
+  const detailsUrl = isMatch ? `/activity/match/${item.matchId}` : `/activity/game/${first.id}`
+  const extras = first.sex || '' // (indoor/outdoor is shown on the court icon)
 
-  // For matches: how many games each side won (based on game 1's teams)
-  const team1Wins = item.games.filter((g) => g.winning_team === 1).length
-  const team2Wins = item.games.length - team1Wins
-  const team1Won = isMatch ? team1Wins > team2Wins : first.winning_team === 1
-  const team2Won = isMatch ? team2Wins > team1Wins : first.winning_team === 2
-
-  const details = [first.game_type, first.location, first.sex].filter(Boolean).join(' · ')
+  function open(e) {
+    if (e.target.closest('a, button')) return // let links (like names) work normally
+    navigate(detailsUrl)
+  }
 
   return (
-    <li className="card feed-item">
+    <li
+      className="card feed-item clickable"
+      onClick={open}
+      onKeyDown={(e) => e.key === 'Enter' && navigate(detailsUrl)}
+      role="link"
+      tabIndex={0}
+      aria-label={`${title || 'Game'} - view details`}
+    >
+      {/* title first, with the court icon (singles/doubles, indoor/outdoor) top-right */}
+      <div className="feed-top">
+        {title ? <h3 className="feed-title">{title}</h3> : <span />}
+        <CourtIcon type={first.game_type} location={first.location} playedAt={first.played_at} />
+      </div>
+
+      {/* then who played what */}
       <div className="feed-head">
-        <Avatar name={recorder?.display_name || '?'} url={recorder?.avatar_url} size={32} />
+        <Avatar name={first.recorder?.display_name || '?'} url={first.recorder?.avatar_url} size={32} />
         <div className="feed-head-text">
-          <span>
-            <strong>{recorderName}</strong> logged {isMatch ? `a ${item.games.length}-game match` : `a ${first.game_type} game`}
-          </span>
+          <span><strong>{recorder}</strong> {rest}</span>
           <span className="muted small">{timeAgo(first.played_at)}</span>
         </div>
       </div>
 
-      {/* Team 1 vs team 2: winner gets a "Won" badge + highlight, loser is dimmed */}
-      <div className="feed-teams">
-        {[1, 2].map((team) => {
-          const won = team === 1 ? team1Won : team2Won
-          const lost = team === 1 ? team2Won : team1Won // (a tied match is neither)
-          return (
-            <div key={team} className={`feed-team ${won ? 'winner' : ''} ${lost ? 'loser' : ''}`}>
-              <span className="feed-team-names"><TeamNames game={first} team={team} meId={meId} /></span>
-              {won && <span className="won-badge">🏆 Won</span>}
-              {isMatch ? (
-                <span className="feed-score">{team === 1 ? team1Wins : team2Wins}</span>
-              ) : (
-                <Score game={first} team={team} />
-              )}
-            </div>
-          )
-        })}
-      </div>
+      {description && <p className="feed-description">{description}</p>}
 
-      {isMatch && (
-        <div className="feed-games muted small">
-          {item.games.map((g) => (
-            <span key={g.id}>
-              Game {g.game_number}:{' '}
-              {g.team1_score == null && g.team2_score == null
-                ? 'no score'
-                : `${g.team1_score ?? '?'}–${g.team2_score ?? '?'}`}
-            </span>
-          ))}
+      <PhotoCarousel photos={photos} />
+
+      <TeamRows group={item} meId={meId} />
+      {isMatch && <MatchGameScores games={item.games} />}
+
+      {(extras || (!isMatch && first.fun_rating)) && (
+        <div className="feed-meta muted small">
+          {extras && <span>{extras}</span>}
+          {!isMatch && first.fun_rating ? <span>{'★'.repeat(first.fun_rating)}</span> : null}
         </div>
       )}
-
-      <div className="muted small">
-        {details}
-        {!isMatch && first.fun_rating ? ` · ${'★'.repeat(first.fun_rating)}` : ''}
-      </div>
     </li>
   )
 }

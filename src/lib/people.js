@@ -12,6 +12,7 @@ export function userPlayer(profile) {
     name: profile.display_name,
     username: profile.username,
     avatar_url: profile.avatar_url,
+    paddle_color: profile.paddle_color, // colors their paddles on the play calendar
   }
 }
 
@@ -36,8 +37,8 @@ export function usePeople() {
         .from('friendships')
         .select(
           `id, requester_id, addressee_id,
-           requester:profiles!friendships_requester_id_fkey ( id, username, display_name, avatar_url ),
-           addressee:profiles!friendships_addressee_id_fkey ( id, username, display_name, avatar_url )`
+           requester:profiles!friendships_requester_id_fkey ( id, username, display_name, avatar_url, paddle_color ),
+           addressee:profiles!friendships_addressee_id_fkey ( id, username, display_name, avatar_url, paddle_color )`
         )
         .eq('status', 'accepted')
         .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`),

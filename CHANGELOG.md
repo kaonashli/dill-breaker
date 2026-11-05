@@ -2,7 +2,44 @@
 
 ## Unreleased
 
+> **Upgrading?** Run `supabase/migrations/006` and `007` in the Supabase SQL
+> Editor **before** deploying - the app reads the new columns.
+
+### New
+- **Title & description** for games and matches, shown in the activity feed.
+  New ones get a random punny default title based on the time of day
+  ("Rise and Dink", "Dinks After Dark"...), with a 🎲 button to pick another.
+- **Private notes** on games and matches. Only you can read them (not friends,
+  not admins). Add them when logging, or any time on the game's page.
+- **Photos:** up to 5 per game or match, stored privately (only people who can
+  see the game can see them). In the feed they show one at a time - swipe
+  sideways for the rest.
+- **Game / match details page** (`/activity/game/:id`, `/activity/match/:id`):
+  tap any feed card to see everything, all photos, and your notes. The owner can
+  edit the title, description and photos there, or delete.
+- **Mini court icon** in the top-right of each feed card: a small angled court
+  with a net and 1 or 2 players per side, labelled Singles / Doubles. It also
+  shows Indoor / Outdoor; outdoor games get a little sun (day) or moon (night).
+- **Paddle color:** everyone picks a paddle color in Edit profile & settings
+  (Sunset, Tangerine, Coral, Bubblegum, Lavender, Ice, Lime - one per color
+  family, all picked to look good on the blue court; default is Sunset, the
+  original orange-yellow). It colors the paddles and ball on your play calendar
+  court, and a straight paddle in your color sits in your profile header
+  (`migrations/007`).
+- **Admin "View as":** on any profile page, admins can preview it as a friend
+  or as a stranger would see it.
+- **What's new is public:** opens without logging in, linked subtly at the
+  bottom of the home page and next to the credit on login / sign-up.
+
 ### Changed
+- **Log a game / match forms:** the title (required) and description now come
+  first; required fields are marked with a red *, and the "Required" /
+  "Optional" headings are gone. Private notes and photos are at the bottom.
+- **Feed cards** now start with the title, then who played what.
+- **Feed wording:** "Alex played a doubles game with Sam, Jo and Pat" instead
+  of "Alex logged a doubles game".
+- After saving a game or match you land on its details page.
+- "What's new" button removed from the settings page.
 - **Play calendar:** the court now continues on the far side of the net, seen
   through the see-through net and fading into the distance. Sidelines stay one
   continuous straight line across the net at any screen size.

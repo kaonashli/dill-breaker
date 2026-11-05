@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import ProtectedLayout from './components/ProtectedLayout.jsx'
+import ProtectedLayout, { PublicLayout } from './components/ProtectedLayout.jsx'
+import ActivityDetail from './pages/ActivityDetail.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -19,11 +20,15 @@ export default function App() {
       {/* Public pages */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      {/* open to everyone, logged in or not */}
+      <Route path="/whats-new" element={<PublicLayout><WhatsNew /></PublicLayout>} />
 
       {/* Everything inside here requires being logged in */}
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/activity/game/:id" element={<ActivityDetail kind="game" />} />
+        <Route path="/activity/match/:id" element={<ActivityDetail kind="match" />} />
         <Route path="/games" element={<Games />} />
         <Route path="/games/new" element={<AddGame />} />
         <Route path="/games/:id/edit" element={<AddGame />} />
@@ -32,7 +37,6 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/u/:username" element={<PlayerProfile />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/whats-new" element={<WhatsNew />} />
       </Route>
 
       {/* Unknown URL -> home */}

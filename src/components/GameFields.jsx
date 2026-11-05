@@ -3,6 +3,11 @@ import StarRating from './StarRating'
 import PlayerSelect from './PlayerSelect'
 import { parseScore, scoreError, winnerFromScores } from '../lib/score'
 
+// The little red * next to required fields
+export function Req() {
+  return <span className="req" title="Required" aria-label="required">*</span>
+}
+
 // All the inputs for ONE game. Used by "Add game" and by each game in "Add match".
 // game:     the form object (see lib/games.js)
 // onChange: (fieldName, newValue) => void
@@ -26,13 +31,11 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
 
   return (
     <div className="game-fields">
-      {/* ---------- Required ---------- */}
+      {/* ---------- Required (marked with *) ---------- */}
       <div className="field-group">
-        <div className="group-label">Required</div>
-
         {showDate && (
           <label className="field">
-            <span className="field-label">Date</span>
+            <span className="field-label">Date <Req /></span>
             <input
               type="datetime-local"
               value={game.played_at}
@@ -43,7 +46,7 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
         )}
 
         <div className="field">
-          <span className="field-label">Type of game</span>
+          <span className="field-label">Type of game <Req /></span>
           <Segmented
             ariaLabel="Type of game"
             options={[['singles', 'Singles'], ['doubles', 'Doubles']]}
@@ -53,7 +56,7 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
         </div>
 
         <div className="field">
-          <span className="field-label">Result</span>
+          <span className="field-label">Result <Req /></span>
           {autoWon !== null ? (
             <p className={`auto-result ${autoWon ? 'win' : 'loss'}`}>
               {autoWon ? 'Win' : 'Loss'} <span className="muted">(from the score)</span>
@@ -71,7 +74,6 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
 
       {/* ---------- Optional ---------- */}
       <div className="field-group">
-        <div className="group-label">Optional</div>
 
         <div className="field-row">
           <label className="field">

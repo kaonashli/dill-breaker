@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { dailyCounts, localDateKey } from '../../lib/stats'
+import { LyingPaddles } from '../PaddleArt'
 
 const WEEKS = 26 // about 6 months
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -71,83 +72,6 @@ function Court() {
       <line {...lineProps} x1="94" y1="0" x2="100" y2="50" /> {/* right sideline */}
       <line {...lineProps} x1={leftAt(KITCHEN_Y)} y1={KITCHEN_Y} x2={100 - leftAt(KITCHEN_Y)} y2={KITCHEN_Y} /> {/* kitchen line */}
       <line {...lineProps} x1="50" y1={KITCHEN_Y} x2="50" y2="50" /> {/* center line */}
-    </svg>
-  )
-}
-
-// An orange-yellow paddle with a black handle lying on the near court, with a ball.
-// The paddle is drawn flat (seen from above): face on the left, handle on the right.
-// It's then turned so the face points up and away, and squashed a little for
-// perspective. A darker copy underneath gives it some thickness, plus a shadow.
-// Where a paddle lies: center point, which way it's turned, and how squashed it looks.
-// (read right-to-left: center the drawing, turn it, squash it, move it into place)
-function paddleTransform(cx, cy, angle, squash = 0.72, size = 1) {
-  return `translate(${cx} ${cy}) scale(${size} ${squash * size}) rotate(${angle}) translate(-48 -22)`
-}
-
-// One paddle = shadow + thickness + the paddle itself
-function PaddleLayers({ transform }) {
-  return (
-    <>
-      <g transform={`translate(5 6) ${transform}`}>
-        <PaddleShape solid="rgba(0,0,0,0.25)" />
-      </g>
-      <g transform={`translate(0 3) ${transform}`}>
-        <PaddleShape solid="#8a4d06" />
-      </g>
-      <g transform={transform}>
-        <PaddleShape />
-      </g>
-    </>
-  )
-}
-
-// The paddle outline. solid = draw everything in one color (for the shadow / thickness layers)
-function PaddleShape({ solid }) {
-  if (solid) {
-    return (
-      <>
-        <rect x="56" y="15" width="42" height="14" rx="4" fill={solid} />
-        <rect x="0" y="0" width="62" height="44" rx="17" fill={solid} />
-      </>
-    )
-  }
-  return (
-    <>
-      {/* handle + grip wrap + end cap */}
-      <rect x="56" y="15" width="40" height="14" rx="4" fill="#161616" />
-      {[66, 73, 80, 87].map((x) => (
-        <path key={x} d={`M${x} 15 l-3 14`} stroke="#3c3c3c" strokeWidth="1.8" />
-      ))}
-      <rect x="93" y="14" width="6" height="16" rx="2.5" fill="#262626" />
-      {/* face */}
-      <rect x="0" y="0" width="62" height="44" rx="17" fill="#f6a928" />
-      {/* edge guard all the way around */}
-      <rect x="1.2" y="1.2" width="59.6" height="41.6" rx="16" fill="none" stroke="#c06e0c" strokeWidth="2.6" />
-      {/* throat where the face meets the handle */}
-      <path d="M56 13 Q64 22 56 31" fill="#d9861a" />
-      {/* shine across the face */}
-      <path d="M12 9 Q26 4 40 8" stroke="#ffe1a0" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.85" />
-    </>
-  )
-}
-
-function Paddle() {
-  return (
-    <svg className="court-paddle" viewBox="0 0 140 80" aria-hidden="true">
-      {/* second paddle, dropped a little to the right at a different angle
-          and slightly smaller (it's tucked under the first one) */}
-      <PaddleLayers transform={paddleTransform(101, 42, 106, 0.68, 0.96)} />
-      {/* first paddle, face pointing up toward the net */}
-      <PaddleLayers transform={paddleTransform(52, 40, 125)} />
-
-      {/* a pickleball resting between them: shadow, then the ball */}
-      <circle cx="68" cy="71" r="7.5" fill="rgba(0,0,0,0.25)" transform="translate(2 2)" />
-      {/* same orange-yellow as the paddles, with darker holes */}
-      <circle cx="68" cy="71" r="7.5" fill="#f6a928" stroke="#c06e0c" strokeWidth="1" />
-      {[[68, 67], [64.5, 70], [71.5, 70], [66, 74.5], [70, 74.5]].map(([cx, cy]) => (
-        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.1" fill="#b4650a" />
-      ))}
     </svg>
   )
 }
@@ -258,7 +182,7 @@ export default function PlayCalendar({ players, stats, colors }) {
             {/* near court with a paddle lying on it */}
             <div className="near-court">
               <Court />
-              <Paddle />
+              <LyingPaddles colorKey={p.paddle_color} className="court-paddle" />
             </div>
           </div>
         )

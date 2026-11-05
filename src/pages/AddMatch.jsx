@@ -5,7 +5,10 @@ import { useAuth } from '../context/AuthContext'
 import { usePeople } from '../lib/people'
 import { gameToRow, newGame, saveParticipants, toLocalInput, validateGame } from '../lib/games'
 import { friendlyError } from '../lib/errors'
+import { saveNotesAndPhotos, storyColumns, useExtras } from '../lib/extras'
 import GameFields from '../components/GameFields'
+import { NotesPhotosFields, StoryFields } from '../components/ExtrasFields'
+import { Req } from '../components/GameFields'
 
 // Fields that copy from game 1 to the other games until you change them there
 const COPY_FIELDS = ['game_type', 'location', 'sex', 'partner', 'opponents']
@@ -31,6 +34,8 @@ export default function AddMatch() {
   const [games, setGames] = useState([newGame(), newGame(), newGame()]) // best of 3 by default
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // title / description / private notes / photos for the whole match
+  const story = useExtras(playedAt)
 
   function setGameCount(count) {
     const n = Math.max(1, Math.min(MAX_GAMES, Number(count) || 1))
@@ -64,6 +69,7 @@ export default function AddMatch() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!story.extras.title.trim()) return setError('Give your match a title.')
     if (!playedAt) return setError('Pick a date.')
     for (let i = 0; i < games.length; i++) {
       const problem = validateGame(games[i], { checkDate: false })
@@ -76,7 +82,7 @@ export default function AddMatch() {
     try {
       const { data: match, error: matchError } = await supabase
         .from('matches')
-        .insert({ recorded_by: user.id })
+        .insert({ recorded_by: user.id, ...storyColumns(story.extras, playedAt) })
         .select('id')
         .single()
       if (matchError) throw matchError
@@ -98,7 +104,11 @@ export default function AddMatch() {
       for (const row of inserted) {
         await saveParticipants(row.id, games[row.game_number - 1])
       }
-      navigate('/')
+      const savedMatchId = matchId
+      matchId = null // fully saved: don't undo it below if notes/photos have trouble
+      const failed = await saveNotesAndPhotos(user.id, { matchId: savedMatchId }, story.extras)
+      if (failed.length) window.alert(`Your match was saved, but the ${failed.join(' and ')} couldn't be saved. You can add them from the match's page.`)
+      navigate(`/activity/match/${savedMatchId}`) // show the finished match
     } catch (err) {
       // Undo the half-saved match (deleting it deletes its games too)
       if (matchId) await supabase.from('matches').delete().eq('id', matchId)
@@ -116,12 +126,14 @@ export default function AddMatch() {
       </p>
       <form onSubmit={handleSubmit}>
         <div className="card match-header">
+          {/* title + description for the whole match come first */}
+          <StoryFields value={story.extras} onChange={story.change} onRerollTitle={story.reroll} />
           <label className="field">
-            <span className="field-label">Date</span>
+            <span className="field-label">Date <Req /></span>
             <input type="datetime-local" value={playedAt} onChange={(e) => setPlayedAt(e.target.value)} required />
           </label>
           <label className="field">
-            <span className="field-label">How many games?</span>
+            <span className="field-label">How many games? <Req /></span>
             <input
               type="number" min="1" max={MAX_GAMES}
               value={games.length}
@@ -157,6 +169,11 @@ export default function AddMatch() {
             + Add another game
           </button>
         )}
+
+        {/* private notes + photos for the whole match */}
+        <div className="card match-header extras-spacer">
+          <NotesPhotosFields value={story.extras} onChange={story.change} />
+        </div>
 
         {error && <p className="form-error">{error}</p>}
         <div className="form-actions sticky-actions">

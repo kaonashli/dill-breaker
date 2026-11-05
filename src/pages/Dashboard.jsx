@@ -61,6 +61,11 @@ export default function Dashboard() {
         />
 
         <WidgetBoard players={players} />
+
+        {/* subtle link to the release notes */}
+        <p className="dash-footer">
+          <Link to="/whats-new">What's new in v{CURRENT_VERSION}</Link>
+        </p>
       </div>
 
       {/* On phones this lives in the Friends tab instead */}

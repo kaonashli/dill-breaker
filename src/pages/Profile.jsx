@@ -8,7 +8,9 @@ import { resizeImage } from '../lib/image'
 import { removeAvatar, uploadAvatar } from '../lib/avatar'
 import { MIN_PASSWORD, USERNAME_RE } from '../lib/validation'
 import { playHit, setSoundEnabled, soundEnabled } from '../lib/sound'
-import { CURRENT_VERSION, hasUnseenRelease } from '../lib/releases'
+import { CURRENT_VERSION } from '../lib/releases'
+import { DEFAULT_PADDLE, PICKABLE_PADDLE_COLORS } from '../lib/paddleColors'
+import { StraightPaddle } from '../components/PaddleArt'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 
@@ -21,6 +23,12 @@ export default function Profile() {
   const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState(null) // { type, text }
   const [sound, setSound] = useState(soundEnabled)
+
+  async function savePaddle(key) {
+    const { error } = await supabase.from('profiles').update({ paddle_color: key }).eq('id', user.id)
+    if (error) return fail(error)
+    await refreshProfile()
+  }
 
   const ok = (text) => setMessage({ type: 'ok', text })
   const fail = (err) => setMessage({ type: 'error', text: typeof err === 'string' ? err : friendlyError(err) })
@@ -115,6 +123,32 @@ export default function Profile() {
         </form>
       </section>
 
+      {/* Paddle color: colors your paddles + ball on the play calendar; others see it too */}
+      <section className="card stack">
+        <h2>Your paddle</h2>
+        <p className="muted small">
+          Pick your paddle color. It shows on your play calendar and profile, and friends can see it.
+        </p>
+        <div className="paddle-picker" role="radiogroup" aria-label="Paddle color">
+          {PICKABLE_PADDLE_COLORS.map((c) => {
+            const selected = (profile.paddle_color || DEFAULT_PADDLE) === c.key
+            return (
+              <button
+                key={c.key}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                className={`paddle-option ${selected ? 'selected' : ''}`}
+                onClick={() => savePaddle(c.key)}
+              >
+                <StraightPaddle colorKey={c.key} height={56} />
+                <span className="small">{c.name}</span>
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
       <section className="card stack">
         <h2>Appearance</h2>
         <Segmented
@@ -163,9 +197,6 @@ export default function Profile() {
 
       {/* Mainly for phones, where the top bar doesn't show these */}
       <section className="card profile-links">
-        <Link to="/whats-new" className="btn btn-block">
-          What's new {hasUnseenRelease() && <span className="release-latest">New</span>}
-        </Link>
         {isAdmin && <Link to="/admin" className="btn btn-block">Admin tools</Link>}
         <button className="btn btn-block" onClick={signOut}>Sign out</button>
       </section>

@@ -22,7 +22,7 @@ export default function ComparePicker({ me, includeMe, setIncludeMe, compared, o
   useEffect(() => {
     if (!canCompareAnyone) return
     Promise.all([
-      supabase.from('profiles').select('id, username, display_name, avatar_url').order('display_name'),
+      supabase.from('profiles').select('id, username, display_name, avatar_url, paddle_color').order('display_name'),
       supabase.from('pickle_pals').select('id, name, owner:profiles ( display_name )').order('name'),
     ]).then(([usersRes, palsRes]) => {
       const users = (usersRes.data || []).map(userPlayer)

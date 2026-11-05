@@ -15,7 +15,7 @@ export default function AuthCard({ title, children }) {
         {children}
       </div>
       {/* small print under the card */}
-      <Credit />
+      <Credit whatsNew />
     </div>
   )
 }
