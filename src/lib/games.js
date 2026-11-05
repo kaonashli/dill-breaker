@@ -42,10 +42,24 @@ export function newGame(overrides = {}) {
   }
 }
 
-// Win/loss: from the scores if both are entered, otherwise what the user picked
+// The result field (game.won) is one of:
+//   true = win, false = loss, 'fun' = just for fun (not counted), null = not picked
+export const FUN = 'fun'
+
+// Win/loss: from the scores if both are entered, otherwise what the user picked.
+// "Just for fun" always wins over the scores.
 export function resolvedWon(game) {
+  if (game.won === FUN) return FUN
   const auto = winnerFromScores(parseScore(game.our_score), parseScore(game.their_score))
   return auto !== null ? auto : game.won
+}
+
+// For fun games any score from 0 to 50 is fine (no win-by-2 etc.)
+function funScoreError(game) {
+  for (const s of [parseScore(game.our_score), parseScore(game.their_score)]) {
+    if (s !== null && (Number.isNaN(s) || s < 0 || s > 50)) return 'Scores must be whole numbers from 0 to 50.'
+  }
+  return null
 }
 
 // Returns an error message or null
@@ -53,9 +67,12 @@ export function validateGame(game, { checkDate = true } = {}) {
   if (checkDate && !game.played_at) return 'Pick a date.'
   if (!game.game_type) return 'Choose singles or doubles.'
   const won = resolvedWon(game)
-  if (won === null) return 'Did you win or lose?'
+  if (won === null) return 'Did you win or lose? (Or pick "Just for fun".)'
+  if (won === FUN) return funScoreError(game)
   return scoreError(parseScore(game.our_score), parseScore(game.their_score), won)
 }
+
+export { funScoreError }
 
 // Form -> database row for public.games (team 1 = recorder's team)
 export function gameToRow(game) {
@@ -66,7 +83,8 @@ export function gameToRow(game) {
     sex: game.sex || null,
     team1_score: parseScore(game.our_score),
     team2_score: parseScore(game.their_score),
-    winning_team: resolvedWon(game) ? 1 : 2,
+    for_fun: resolvedWon(game) === FUN,
+    winning_team: resolvedWon(game) === FUN ? null : resolvedWon(game) ? 1 : 2,
     fun_rating: game.fun_rating || null,
   }
 }
@@ -107,7 +125,7 @@ export function rowToGame(row) {
   return newGame({
     played_at: toLocalInput(new Date(row.played_at)),
     game_type: row.game_type,
-    won: row.winning_team === 1,
+    won: row.for_fun ? FUN : row.winning_team === 1,
     location: row.location || '',
     sex: row.sex || '',
     partner: partner ? keyOf(partner) : '',
@@ -121,6 +139,6 @@ export function rowToGame(row) {
 // Columns to select when we want a game plus who played in it
 export const GAME_WITH_PLAYERS = `
   id, match_id, game_number, played_at, game_type, location, sex,
-  team1_score, team2_score, winning_team, fun_rating, recorded_by,
+  team1_score, team2_score, winning_team, for_fun, fun_rating, recorded_by,
   game_participants ( team, user_id, pickle_pal_id, profiles ( display_name ), pickle_pals ( name ) )
 `

@@ -110,9 +110,9 @@ export function TeamRows({ group, meId }) {
   const first = group.games[0]
   const isMatch = Boolean(group.matchId)
   const team1Wins = group.games.filter((g) => g.winning_team === 1).length
-  const team2Wins = group.games.length - team1Wins
-  const team1Won = isMatch ? team1Wins > team2Wins : first.winning_team === 1
-  const team2Won = isMatch ? team2Wins > team1Wins : first.winning_team === 2
+  const team2Wins = group.games.filter((g) => g.winning_team === 2).length
+  const team1Won = isMatch ? team1Wins > team2Wins : !first.for_fun && first.winning_team === 1
+  const team2Won = isMatch ? team2Wins > team1Wins : !first.for_fun && first.winning_team === 2
 
   return (
     <div className="feed-teams">
@@ -130,6 +130,7 @@ export function TeamRows({ group, meId }) {
           </div>
         )
       })}
+      {!isMatch && first.for_fun && <span className="fun-tag">Just for fun (not counted)</span>}
     </div>
   )
 }
@@ -142,6 +143,7 @@ export function MatchGameScores({ games }) {
         <span key={g.id}>
           Game {g.game_number}:{' '}
           {g.team1_score == null && g.team2_score == null ? 'no score' : `${g.team1_score ?? '?'}–${g.team2_score ?? '?'}`}
+          {g.for_fun ? ' (just for fun)' : ''}
         </span>
       ))}
     </div>
@@ -151,7 +153,7 @@ export function MatchGameScores({ games }) {
 // Columns to load for feed / details
 export const FEED_COLUMNS = `
   id, match_id, game_number, played_at, game_type, location, sex,
-  team1_score, team2_score, winning_team, fun_rating, recorded_by, title, description,
+  team1_score, team2_score, winning_team, for_fun, fun_rating, recorded_by, title, description,
   match:matches ( id, title, description, recorded_by ),
   recorder:profiles!games_recorded_by_fkey ( display_name, username, avatar_url ),
   game_participants ( team, user_id, pickle_pal_id, profiles ( display_name, username ), pickle_pals ( name ) )

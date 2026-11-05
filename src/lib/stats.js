@@ -6,9 +6,16 @@ export function rowKey(row) {
   return row.user_id ? `user:${row.user_id}` : `pal:${row.pickle_pal_id}`
 }
 
+// "Just for fun" games have won = null: they count as games played
+// (calendar, who you play with) but never as a win or a loss.
+export function countedRows(rows) {
+  return rows.filter((r) => r.won !== null && r.won !== undefined)
+}
+
 export function winLoss(rows) {
-  const wins = rows.filter((r) => r.won).length
-  const total = rows.length
+  const counted = countedRows(rows)
+  const wins = counted.filter((r) => r.won).length
+  const total = counted.length
   return { wins, losses: total - wins, total, winPct: total ? wins / total : 0 }
 }
 
@@ -75,7 +82,8 @@ export function companions(playerKey, rows, rowsByGame) {
 // +20 means you win 20% more often with them than usual.
 export function chemistry(playerKey, rows, rowsByGame) {
   const overall = winLoss(rows).winPct
-  return companions(playerKey, rows, rowsByGame)
+  // only games that count (not "just for fun")
+  return companions(playerKey, countedRows(rows), rowsByGame)
     .filter((c) => c.with > 0)
     .map((c) => {
       const winPctWith = c.winsWith / c.with

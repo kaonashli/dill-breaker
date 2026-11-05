@@ -22,6 +22,8 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - Feed/detail shared bits in `src/components/GameSummary.jsx` (`FEED_COLUMNS`, `TeamRows`, `playedSentence`, `groupStory`). Details page `src/pages/ActivityDetail.jsx`. `/whats-new` is public via `PublicLayout` (ProtectedLayout.jsx also exports `AppShell`).
 - Migration 007: `profiles.paddle_color` (keys in `src/lib/paddleColors.js`: sunset default, red, orange, yellow, green, blue, purple, pink; shades computed by `paddleShades()`). Paddle drawings live in `src/components/PaddleArt.jsx` (`LyingPaddles` on the calendar court, `StraightPaddle` upright). Player objects carry `paddle_color`; pals use the default.
 - `CourtIcon` props: `type`, `location`, `playedAt` (outdoor = sun 6am-7pm else moon; indoor = label only). Admin "View as" (admin/friend/stranger) is local state on `PlayerProfile`.
+- Migration 008: `games.for_fun` (winning_team null, score rules skipped); `player_game_results` returns won/points null for fun games and has a `for_fun` column. Form value `game.won` = true | false | 'fun' (`FUN` in lib/games.js). Stats use `countedRows()` (lib/stats.js) to skip fun games for W/L, points, chemistry, head-to-head; calendar and play-partners include them.
+- The user dislikes emojis in the UI: prefer plain text or drawn SVG icons.
 - `supabase/dev/`: dev-only SQL (e.g. `fake_friend_request.sql`), not migrations.
 - `src/context/ThemeContext.jsx`: `useTheme()` → `theme ('light'|'dark'|'system'), setTheme, isDark`.
 - `src/lib/score.js`: score rules (mirror of SQL `is_valid_score`). `src/lib/games.js`: game form ↔ DB rows. `src/lib/stats.js`: widget math. `src/lib/useStats.js`: loads dashboard data. `src/lib/people.js`: `usePeople()` (friends + my pals).

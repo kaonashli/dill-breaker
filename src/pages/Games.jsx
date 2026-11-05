@@ -151,11 +151,17 @@ function GameRow({ game, meId, canEdit, onDelete }) {
     game.location,
     game.sex,
     game.match_id ? `match · game ${game.game_number}` : null,
+    game.for_fun ? 'just for fun' : null,
   ].filter(Boolean)
 
   return (
     <li className="card game-row">
-      <span className={`badge ${won ? 'win' : 'loss'}`}>{won ? 'W' : 'L'}</span>
+      {/* W / L, or "F" (gray) for a just-for-fun game that isn't counted */}
+      {game.for_fun ? (
+        <span className="badge fun" title="Just for fun">F</span>
+      ) : (
+        <span className={`badge ${won ? 'win' : 'loss'}`}>{won ? 'W' : 'L'}</span>
+      )}
       <div className="game-row-main">
         <div>
           <strong>{namesOn(ourTeam)}</strong> <span className="muted">vs</span> {namesOn(theirTeam)}

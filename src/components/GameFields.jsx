@@ -2,6 +2,7 @@ import Segmented from './Segmented'
 import StarRating from './StarRating'
 import PlayerSelect from './PlayerSelect'
 import { parseScore, scoreError, winnerFromScores } from '../lib/score'
+import { FUN, funScoreError } from '../lib/games'
 
 // The little red * next to required fields
 export function Req() {
@@ -21,7 +22,10 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
 
   // Players already chosen in this game (so they can't be picked twice)
   const chosen = [isDoubles ? game.partner : '', ...game.opponents.slice(0, opponentSlots)].filter(Boolean)
-  const scoreProblem = scoreError(our, their, autoWon !== null ? autoWon : game.won)
+  const isFun = game.won === FUN // "Just for fun": not counted, any score is fine
+  const scoreProblem = isFun ? funScoreError(game) : scoreError(our, their, autoWon !== null ? autoWon : game.won)
+  // What the Result buttons show: "Just for fun" if picked, otherwise the score decides (if both entered)
+  const shownResult = isFun ? FUN : autoWon !== null ? autoWon : game.won
 
   function setOpponent(index, key) {
     const next = [...game.opponents]
@@ -57,18 +61,22 @@ export default function GameFields({ game, onChange, people, showDate = true }) 
 
         <div className="field">
           <span className="field-label">Result <Req /></span>
-          {autoWon !== null ? (
-            <p className={`auto-result ${autoWon ? 'win' : 'loss'}`}>
+          <Segmented
+            ariaLabel="Result"
+            options={[[true, 'Win'], [false, 'Loss'], [FUN, 'Just for fun']]}
+            value={shownResult}
+            onChange={(v) => onChange('won', v)}
+          />
+          {isFun ? (
+            <p className="muted small result-hint fun-note">
+              This game won't count toward your wins, losses or points. It will still appear
+              on your play calendar and in the activity feed.
+            </p>
+          ) : autoWon !== null ? (
+            <p className={`small result-hint auto-result ${autoWon ? 'win' : 'loss'}`}>
               {autoWon ? 'Win' : 'Loss'} <span className="muted">(from the score)</span>
             </p>
-          ) : (
-            <Segmented
-              ariaLabel="Result"
-              options={[[true, 'Win'], [false, 'Loss']]}
-              value={game.won}
-              onChange={(v) => onChange('won', v)}
-            />
-          )}
+          ) : null}
         </div>
       </div>
 

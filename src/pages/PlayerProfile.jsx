@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { chartColors } from '../lib/colors'
 import { useStats } from '../lib/useStats'
-import { average, byGameType, companions, winLoss } from '../lib/stats'
+import { average, byGameType, companions, countedRows, winLoss } from '../lib/stats'
 import { userPlayer } from '../lib/people'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
@@ -230,9 +230,10 @@ function ProfileStats({ player, meKey, isMe }) {
   const wl = winLoss(rows)
   const types = byGameType(rows)
   const points = rows.filter((r) => r.points_for !== null).map((r) => r.points_for)
-  const people = companions(player.key, rows, stats.rowsByGame)
+  const people = companions(player.key, rows, stats.rowsByGame) // everyone they played with (incl. just-for-fun)
+  const counted = companions(player.key, countedRows(rows), stats.rowsByGame) // only games that count
   const topPartner = people.filter((c) => c.with > 0).sort((a, b) => b.with - a.with)[0]
-  const vsMe = isMe ? null : people.find((c) => c.key === meKey)
+  const vsMe = isMe ? null : counted.find((c) => c.key === meKey)
   const now = new Date()
   const thisMonth = rows.filter((r) => {
     const d = new Date(r.played_at)
@@ -240,7 +241,7 @@ function ProfileStats({ player, meKey, isMe }) {
   }).length
 
   const tiles = [
-    ['Games', wl.total],
+    ['Games', rows.length], // every game played, including just for fun
     ['Win %', `${Math.round(wl.winPct * 100)}%`],
     ['Record', `${wl.wins}–${wl.losses}`],
     ['This month', thisMonth],

@@ -227,6 +227,10 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .icon-btn { font-size: 1rem; color: var(--text-2); }
 .icon-btn:hover { color: var(--text); }
 .theme-option { display: inline-flex; align-items: center; gap: 0.35rem; }
+/* drawn icons (components/Icon.jsx) sitting next to text */
+.icon { flex-shrink: 0; vertical-align: -2px; }
+.field-label .icon { margin-right: -0.15rem; }
+.icon-heading { display: flex; align-items: center; gap: 0.4rem; }
 
 /* ---------- forms ---------- */
 .field { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -243,10 +247,17 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .toggle { display: inline-flex; align-items: center; gap: 0.35rem; margin-right: 0.6rem; cursor: pointer; }
 
 .segmented { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+/* every option gets the same width, so the row looks even */
 .segmented button {
+  flex: 1 1 0; text-align: center; white-space: nowrap;
   border: none; background: var(--surface); padding: 0.45rem 0.9rem; cursor: pointer;
   border-right: 1px solid var(--border);
 }
+/* in forms, toggles keep a tidy width instead of stretching across the whole page */
+.field > .segmented { max-width: 420px; }
+.result-hint { margin: 0.25rem 0 0; }
+.fun-note { max-width: 420px; padding: 0.4rem 0.6rem; border-radius: 8px; background: var(--surface-2); }
+.fun-tag { font-size: 0.78rem; color: var(--muted); font-style: italic; }
 .segmented button:last-child { border-right: none; }
 .segmented button:hover { background: var(--surface-2); }
 .segmented button.selected { background: var(--accent); color: var(--accent-text); font-weight: 600; }
@@ -484,6 +495,7 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 }
 .badge.win { background: var(--win); }
 .badge.loss { background: var(--loss); }
+.badge.fun { background: var(--muted); }
 .pager { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
 
 /* ---------- admin ---------- */

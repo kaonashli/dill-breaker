@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+> **Upgrading?** Run `supabase/migrations/008` in the Supabase SQL Editor before deploying.
+
 ### New
+- **Just for fun result:** a third option next to Win / Loss when logging a game.
+  Fun games show in the feed, the play calendar and "who you play with", but
+  never count toward wins, losses, win %, points or chemistry. Any score from
+  0 to 50 is allowed (no win-by-2 rules) (`migrations/008`).
 - **Pickle logo animation:** every 5 seconds, the pickle strains, SNAPS in
   two with a spray of pickle juice, hangs broken, then springs back whole and
   rests for a few seconds.
@@ -11,6 +17,9 @@
 ### Changed
 - **What's new:** "Back to home" / "Back to log in" links at the top and bottom.
 - **Login page:** a visible "✨ What's new" link inside the card.
+- **Icons instead of emojis** for the private notes lock and the add-photo camera.
+- **Toggle buttons** (Singles / Doubles, Win / Loss / Just for fun, etc.) are
+  now equal widths for an even look on desktop.
 - **Sign out** moved to the bottom of your own profile page (out of settings).
 - **Theme button** (light / dark / system) uses drawn sun, moon and screen
   icons instead of emojis, in the top bar and in settings.

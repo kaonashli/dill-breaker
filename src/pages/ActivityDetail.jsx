@@ -7,6 +7,7 @@ import { MAX_PHOTOS, deletePhoto, loadPhotos, uploadPhotos } from '../lib/photos
 import { loadNote, saveNote } from '../lib/notes'
 import Avatar from '../components/Avatar'
 import CourtIcon from '../components/CourtIcon'
+import Icon from '../components/Icon'
 import { NotesPhotosFields, StoryFields, emptyExtras } from '../components/ExtrasFields'
 import {
   FEED_COLUMNS, MatchGameScores, PlayedLine, TeamRows, groupStory,
@@ -163,7 +164,7 @@ export default function ActivityDetail({ kind }) {
 
       {/* Private notes: anyone viewing can keep their own, only they can see them */}
       <section className="card stack">
-        <h2>🔒 Your private notes</h2>
+        <h2 className="icon-heading"><Icon name="lock" size={18} /> Your private notes</h2>
         <p className="muted small">Only you can see these. Not your friends, not anyone.</p>
         <textarea
           rows={4}

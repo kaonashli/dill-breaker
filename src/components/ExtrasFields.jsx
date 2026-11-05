@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { MAX_PHOTOS } from '../lib/photos'
 import { Req } from './GameFields'
+import Icon from './Icon'
 
 // Extra fields for a game or match, split in two parts so forms can place them:
 //   <StoryFields>        title (required) + description - at the TOP of the form
@@ -63,7 +64,7 @@ export function NotesPhotosFields({ value, onChange, existingPhotos = 0, showNot
     <div className="field-group">
       {showNotes && (
         <label className="field">
-          <span className="field-label">🔒 Private notes <span className="muted">(only you can see these)</span></span>
+          <span className="field-label"><Icon name="lock" size={15} /> Private notes <span className="muted">(only you can see these)</span></span>
           <textarea
             rows={3}
             maxLength={2000}
@@ -94,7 +95,7 @@ export function NotesPhotosFields({ value, onChange, existingPhotos = 0, showNot
           ))}
           {spaceLeft > 0 && (
             <label className="photo-add">
-              <span aria-hidden="true">📷</span>
+              <Icon name="camera" size={24} />
               <span className="small">Add</span>
               <input type="file" accept="image/*" multiple onChange={addFiles} hidden />
             </label>
