@@ -11,6 +11,7 @@ import Admin from './pages/Admin.jsx'
 import Friends from './pages/Friends.jsx'
 import PlayerProfile from './pages/PlayerProfile.jsx'
 import Feed from './pages/Feed.jsx'
+import WhatsNew from './pages/WhatsNew.jsx'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/u/:username" element={<PlayerProfile />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/whats-new" element={<WhatsNew />} />
       </Route>
 
       {/* Unknown URL -> home */}

@@ -194,6 +194,11 @@ function ProfileStats({ player, meKey, isMe }) {
   return (
     <>
       <section className="card">
+        <h2>Play calendar</h2>
+        <PlayCalendar players={players} stats={stats} colors={colors} />
+      </section>
+
+      <section className="card">
         <h2>Stats</h2>
         <StatTiles tiles={tiles} />
       </section>
@@ -212,11 +217,6 @@ function ProfileStats({ player, meKey, isMe }) {
           />
         </section>
       )}
-
-      <section className="card">
-        <h2>Play calendar</h2>
-        <PlayCalendar players={players} stats={stats} colors={colors} />
-      </section>
 
       {/* Your own layout for profile pages: drag, remove and re-add like the dashboard */}
       <WidgetGrid

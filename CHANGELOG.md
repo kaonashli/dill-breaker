@@ -1,8 +1,16 @@
 # Changelog
 
-## Unreleased
+## v0.3.0 (2026-11-05): Notifications & a pickleball makeover 🔔
+
+> **Upgrading?** Run `supabase/migrations/005` in the Supabase SQL Editor.
 
 ### New
+- **What's new page** (`/whats-new`): friendly in-app release notes with the app
+  version. Linked from the Profile tab, and a one-time banner on the dashboard
+  after each update. Notes live in `src/lib/releases.js`.
+- Small "still in development" note (Profile footer, What's new) and a
+  "Developed by kaonashli" credit linking to GitHub (login / sign-up, What's new).
+- Profile pages show the play calendar first, above the stats.
 - **Friend request notifications:** red count badge on the Friends tab / nav link,
   a pop-up at the top of the screen ("Alex sent you a friend request" + View), a
   pickleball "pock" sound, and the count in the browser tab title. New requests

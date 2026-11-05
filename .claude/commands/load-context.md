@@ -25,6 +25,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - `src/components/widgets/index.js`: widget registry. A widget is a component taking `{ players, stats, colors }`.
 - `src/lib/colors.js`: chart palette (fixed, colorblind-checked order; charts need hex, not CSS vars). App colors are CSS variables in `src/index.css` (light default, dark via `prefers-color-scheme` and `[data-theme='dark']`).
 - `README.md`, `CHANGELOG.md`: update CHANGELOG with each release.
+- `src/lib/releases.js`: **player-facing** release notes for the in-app "What's new" page (`/whats-new`). Plain, friendly, non-technical. On each release: add an entry at the top, bump `package.json` version (+ `npm install --package-lock-only`), rename CHANGELOG "Unreleased" to the version, and tag `vX.Y.Z`.
 
 ## Data model & rules
 - `profiles` (auto-created by trigger on sign-up from `raw_user_meta_data.username/display_name`), `user_settings` (theme, `widgets` jsonb array of widget ids).

@@ -8,6 +8,7 @@ import { resizeImage } from '../lib/image'
 import { removeAvatar, uploadAvatar } from '../lib/avatar'
 import { MIN_PASSWORD, USERNAME_RE } from '../lib/validation'
 import { playHit, setSoundEnabled, soundEnabled } from '../lib/sound'
+import { CURRENT_VERSION, hasUnseenRelease } from '../lib/releases'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 
@@ -162,9 +163,15 @@ export default function Profile() {
 
       {/* Mainly for phones, where the top bar doesn't show these */}
       <section className="card profile-links">
+        <Link to="/whats-new" className="btn btn-block">
+          What's new {hasUnseenRelease() && <span className="release-latest">New</span>}
+        </Link>
         {isAdmin && <Link to="/admin" className="btn btn-block">Admin tools</Link>}
         <button className="btn btn-block" onClick={signOut}>Sign out</button>
       </section>
+      <p className="muted small app-version">
+        Dill Breaker version {CURRENT_VERSION} · <span className="dev-note">still in development</span>
+      </p>
     </div>
   )
 }

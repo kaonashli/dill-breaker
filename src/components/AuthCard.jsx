@@ -1,5 +1,6 @@
 import ThemeToggle from './ThemeToggle'
 import PickleLogo from './PickleLogo'
+import Credit from './Credit'
 
 // Centered card used by the login and sign-up pages
 export default function AuthCard({ title, children }) {
@@ -13,6 +14,8 @@ export default function AuthCard({ title, children }) {
         <h1>{title}</h1>
         {children}
       </div>
+      {/* small print under the card */}
+      <Credit />
     </div>
   )
 }
