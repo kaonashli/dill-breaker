@@ -13,6 +13,7 @@ import { DEFAULT_PADDLE, PICKABLE_PADDLE_COLORS } from '../lib/paddleColors'
 import { StraightPaddle } from '../components/PaddleArt'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
+import ThemeIcon from '../components/ThemeIcon'
 
 export default function Profile() {
   const { user, profile, refreshProfile, saveTheme, isAdmin } = useAuth()
@@ -153,7 +154,11 @@ export default function Profile() {
         <h2>Appearance</h2>
         <Segmented
           ariaLabel="Theme"
-          options={[['light', '☀️ Light'], ['dark', '🌙 Dark'], ['system', '🖥️ System']]}
+          options={[
+            ['light', <span className="theme-option"><ThemeIcon theme="light" size={16} /> Light</span>],
+            ['dark', <span className="theme-option"><ThemeIcon theme="dark" size={16} /> Dark</span>],
+            ['system', <span className="theme-option"><ThemeIcon theme="system" size={16} /> System</span>],
+          ]}
           value={theme}
           onChange={saveTheme}
         />

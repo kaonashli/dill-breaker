@@ -12,6 +12,8 @@
 - **What's new:** "Back to home" / "Back to log in" links at the top and bottom.
 - **Login page:** a visible "✨ What's new" link inside the card.
 - **Sign out** moved to the bottom of your own profile page (out of settings).
+- **Theme button** (light / dark / system) uses drawn sun, moon and screen
+  icons instead of emojis, in the top bar and in settings.
 
 ## v0.4.0 (2026-11-05): Photos, stories & your own paddle 🏓
 

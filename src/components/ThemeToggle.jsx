@@ -1,9 +1,9 @@
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import ThemeIcon from './ThemeIcon'
 
 // Cycles: system -> light -> dark -> system
 const NEXT = { system: 'light', light: 'dark', dark: 'system' }
-const ICON = { system: '🖥️', light: '☀️', dark: '🌙' }
 const LABEL = { system: 'System theme', light: 'Light mode', dark: 'Dark mode' }
 
 export default function ThemeToggle() {
@@ -17,7 +17,7 @@ export default function ThemeToggle() {
       title={`${LABEL[theme]} (click to change)`}
       aria-label={`${LABEL[theme]}, click to change`}
     >
-      {ICON[theme]}
+      <ThemeIcon theme={theme} />
     </button>
   )
 }

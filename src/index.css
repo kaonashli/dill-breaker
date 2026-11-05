@@ -224,7 +224,9 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .btn-ghost { background: transparent; border-color: transparent; }
 .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
 .btn-block { width: 100%; }
-.icon-btn { font-size: 1rem; }
+.icon-btn { font-size: 1rem; color: var(--text-2); }
+.icon-btn:hover { color: var(--text); }
+.theme-option { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ---------- forms ---------- */
 .field { display: flex; flex-direction: column; gap: 0.3rem; }
