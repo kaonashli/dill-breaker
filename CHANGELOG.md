@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### New
+- **Friend request notifications:** red count badge on the Friends tab / nav link,
+  a pop-up at the top of the screen ("Alex sent you a friend request" + View), a
+  pickleball "pock" sound, and the count in the browser tab title. New requests
+  arrive instantly (`migrations/005`), with a backup check when you return to the
+  tab and every minute.
+- **Sound setting** on your Profile (on/off + test button), saved per device.
+- **Friends** link in the desktop top bar.
+
 ## v0.2.0 (2026-11-05): Profiles, Activity feed & mobile app feel 📱
 
 Player profile pages, an activity feed of your friends' games, a phone layout

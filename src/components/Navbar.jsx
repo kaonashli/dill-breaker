@@ -2,9 +2,11 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
 import ThemeToggle from './ThemeToggle'
+import { CountBadge, useNotifications } from '../context/NotificationsContext'
 
 export default function Navbar() {
   const { profile, isAdmin, signOut } = useAuth()
+  const { incomingCount } = useNotifications()
 
   return (
     <header className="navbar">
@@ -16,6 +18,9 @@ export default function Navbar() {
         <NavLink to="/" end>Dashboard</NavLink>
         <NavLink to="/feed">Activity</NavLink>
         <NavLink to="/games" end>My games</NavLink>
+        <NavLink to="/friends">
+          Friends <CountBadge count={incomingCount} label="friend requests" />
+        </NavLink>
         {isAdmin && <NavLink to="/admin">Admin</NavLink>}
       </nav>
       <div className="nav-right">

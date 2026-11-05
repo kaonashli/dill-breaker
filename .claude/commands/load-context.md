@@ -17,6 +17,8 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 ## Key files
 - `supabase/schema.sql`: the whole DB (tables, RLS policies, triggers, RPCs, storage bucket). Already applied once. **Schema changes go in new migration SQL for the user to run** (e.g. `supabase/migrations/002_xxx.sql`); don't expect them to re-run the full schema.
 - `src/context/AuthContext.jsx`: `useAuth()` → `user, profile, permissions, settings, hasPermission(key), isAdmin, refreshProfile, saveTheme, signOut`.
+- `src/context/NotificationsContext.jsx` (inside ProtectedLayout): `useNotifications()` → `incomingCount, version, refresh, showToast`; `CountBadge` component. Watches incoming friend requests via Supabase Realtime on `friendships` (migration 005) + focus + 60s poll; toasts + `playPock()` (`src/lib/sound.js`, Web Audio, no file) for request ids not yet in localStorage `seenFriendRequests:<userId>`.
+- `supabase/dev/`: dev-only SQL (e.g. `fake_friend_request.sql`), not migrations.
 - `src/context/ThemeContext.jsx`: `useTheme()` → `theme ('light'|'dark'|'system'), setTheme, isDark`.
 - `src/lib/score.js`: score rules (mirror of SQL `is_valid_score`). `src/lib/games.js`: game form ↔ DB rows. `src/lib/stats.js`: widget math. `src/lib/useStats.js`: loads dashboard data. `src/lib/people.js`: `usePeople()` (friends + my pals).
 - `src/components/WidgetBoard.jsx`: `WidgetGrid` (draggable grid; props `settingsKey` = `'widgets'` for home or `'profile_widgets'` for profile pages, `allowed` ids) and default `WidgetBoard` (loads stats, then grid). Profile pages use `PROFILE_WIDGETS` (everything except play_calendar, which is fixed at the top).

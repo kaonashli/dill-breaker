@@ -307,6 +307,49 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .admin-table th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
 .admin-table input:not([type='checkbox']) { min-width: 130px; }
 
+/* ---------- notifications: badge + toasts ---------- */
+.count-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 999px;
+  background: #e5383b; color: #fff;
+  font-size: 0.7rem; font-weight: 700; line-height: 1;
+  vertical-align: middle;
+}
+.nav-links .count-badge { margin-left: 0.25rem; }
+.tab-icon { position: relative; display: inline-flex; }
+.tab-icon .count-badge {
+  position: absolute; top: -4px; right: -10px;
+  box-shadow: 0 0 0 2px var(--surface);  /* ring so it stands off the icon */
+}
+
+.toasts {
+  position: fixed; z-index: 100;
+  top: calc(12px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+  width: min(440px, calc(100% - 24px));
+  display: flex; flex-direction: column; gap: 0.5rem;
+  pointer-events: none; /* only the toasts themselves are clickable */
+}
+.toast {
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-left: 4px solid var(--accent);
+  border-radius: 12px; padding: 0.6rem 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: toast-in 0.25s ease-out;
+}
+.toast-text { flex: 1; min-width: 0; font-size: 0.92rem; }
+.toast-icon { font-size: 1.5rem; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}
+.sound-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; justify-content: space-between; }
+
 /* ---------- feed ---------- */
 .page-tabs { margin-bottom: 1rem; }
 .tabs a {

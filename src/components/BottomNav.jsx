@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
+import { CountBadge, useNotifications } from '../context/NotificationsContext'
 
 // Simple line icons (24x24) so we don't need an icon library
 const ICONS = {
@@ -44,13 +45,14 @@ const TABS = [
   // opens the friends feed; also lit up on "My games"
   { to: '/feed', label: 'Games', icon: 'games', alsoActiveOn: ['/games'] },
   { to: '/games/new', label: 'Log', icon: 'plus', primary: true },
-  { to: '/friends', label: 'Friends', icon: 'friends' },
+  { to: '/friends', label: 'Friends', icon: 'friends', showRequests: true },
   { to: '/profile', label: 'Profile', icon: 'profile' },
 ]
 
 // App-style tab bar fixed to the bottom of the screen. Only shown on phones (see CSS).
 export default function BottomNav() {
   const { pathname } = useLocation()
+  const { incomingCount } = useNotifications()
   return (
     <nav className="bottom-nav" aria-label="Main">
       {TABS.map((tab) => (
@@ -67,7 +69,10 @@ export default function BottomNav() {
               .join(' ')
           }
         >
-          <Icon name={tab.icon} />
+          <span className="tab-icon">
+            <Icon name={tab.icon} />
+            {tab.showRequests && <CountBadge count={incomingCount} label="friend requests" />}
+          </span>
           <span>{tab.label}</span>
         </NavLink>
       ))}

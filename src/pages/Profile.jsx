@@ -7,6 +7,7 @@ import { friendlyError } from '../lib/errors'
 import { resizeImage } from '../lib/image'
 import { removeAvatar, uploadAvatar } from '../lib/avatar'
 import { MIN_PASSWORD, USERNAME_RE } from '../lib/validation'
+import { playHit, setSoundEnabled, soundEnabled } from '../lib/sound'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 
@@ -18,6 +19,7 @@ export default function Profile() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState(null) // { type, text }
+  const [sound, setSound] = useState(soundEnabled)
 
   const ok = (text) => setMessage({ type: 'ok', text })
   const fail = (err) => setMessage({ type: 'error', text: typeof err === 'string' ? err : friendlyError(err) })
@@ -120,6 +122,25 @@ export default function Profile() {
           value={theme}
           onChange={saveTheme}
         />
+      </section>
+
+      <section className="card stack">
+        <h2>Notifications</h2>
+        <div className="sound-row">
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={sound}
+              onChange={(e) => {
+                setSound(e.target.checked)
+                setSoundEnabled(e.target.checked)
+              }}
+            />
+            Play a paddle-hit sound for new friend requests
+          </label>
+          <button className="btn btn-sm" onClick={() => playHit({ force: true })}>🔊 Test sound</button>
+        </div>
+        <p className="muted small">Saved on this device. Phones on silent mode won't play it.</p>
       </section>
 
       <section className="card">

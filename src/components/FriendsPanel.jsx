@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationsContext'
 import Avatar from './Avatar'
 
 const PROFILE_COLS = 'id, username, display_name, avatar_url'
@@ -10,6 +11,7 @@ const PROFILE_COLS = 'id, username, display_name, avatar_url'
 // people: result of usePeople() so the friends list refreshes everywhere
 export default function FriendsPanel({ people }) {
   const { user } = useAuth()
+  const notifications = useNotifications()
   const [term, setTerm] = useState('')
   const [results, setResults] = useState(null) // null = haven't searched
   const [incoming, setIncoming] = useState([])
@@ -31,12 +33,14 @@ export default function FriendsPanel({ people }) {
     setOutgoing(rows.filter((r) => r.requester_id === user.id))
   }, [user.id])
 
+  // Reload whenever the notifications system sees a change (e.g. a new request arrives)
   useEffect(() => {
     loadRequests()
-  }, [loadRequests])
+  }, [loadRequests, notifications.version])
 
+  // After accepting/declining/etc: update this list, the friends list, and the badges
   async function refreshAll() {
-    await Promise.all([loadRequests(), people.reload()])
+    await Promise.all([loadRequests(), people.reload(), notifications.refresh()])
   }
 
   async function search(e) {

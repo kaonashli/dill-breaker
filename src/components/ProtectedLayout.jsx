@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Navbar from './Navbar'
 import BottomNav from './BottomNav'
+import { NotificationsProvider } from '../context/NotificationsContext'
 
 // Wraps every page that needs a login. Not logged in -> go to /login.
 export default function ProtectedLayout() {
@@ -19,12 +20,13 @@ export default function ProtectedLayout() {
   }
 
   return (
-    <>
+    // NotificationsProvider: friend request badges, pop-ups and sound
+    <NotificationsProvider>
       <Navbar />
       <main className="container">
         <Outlet /> {/* the current page renders here */}
       </main>
       <BottomNav /> {/* phones only */}
-    </>
+    </NotificationsProvider>
   )
 }
