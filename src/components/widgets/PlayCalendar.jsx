@@ -75,6 +75,68 @@ function Court() {
   )
 }
 
+// An orange-yellow paddle with a black handle lying on the near court, with a ball.
+// The paddle is drawn flat (seen from above): face on the left, handle on the right.
+// It's then turned so the face points up and away, and squashed a little for
+// perspective. A darker copy underneath gives it some thickness, plus a shadow.
+const PADDLE_TRANSFORM = 'translate(52 40) scale(1 0.72) rotate(125) translate(-48 -22)'
+
+// The paddle outline. solid = draw everything in one color (for the shadow / thickness layers)
+function PaddleShape({ solid }) {
+  if (solid) {
+    return (
+      <>
+        <rect x="56" y="15" width="42" height="14" rx="4" fill={solid} />
+        <rect x="0" y="0" width="62" height="44" rx="17" fill={solid} />
+      </>
+    )
+  }
+  return (
+    <>
+      {/* handle + grip wrap + end cap */}
+      <rect x="56" y="15" width="40" height="14" rx="4" fill="#161616" />
+      {[66, 73, 80, 87].map((x) => (
+        <path key={x} d={`M${x} 15 l-3 14`} stroke="#3c3c3c" strokeWidth="1.8" />
+      ))}
+      <rect x="93" y="14" width="6" height="16" rx="2.5" fill="#262626" />
+      {/* face */}
+      <rect x="0" y="0" width="62" height="44" rx="17" fill="#f6a928" />
+      {/* edge guard all the way around */}
+      <rect x="1.2" y="1.2" width="59.6" height="41.6" rx="16" fill="none" stroke="#c06e0c" strokeWidth="2.6" />
+      {/* throat where the face meets the handle */}
+      <path d="M56 13 Q64 22 56 31" fill="#d9861a" />
+      {/* shine across the face */}
+      <path d="M12 9 Q26 4 40 8" stroke="#ffe1a0" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.85" />
+    </>
+  )
+}
+
+function Paddle() {
+  return (
+    <svg className="court-paddle" viewBox="0 0 110 80" aria-hidden="true">
+      {/* shadow on the court */}
+      <g transform={`translate(5 6) ${PADDLE_TRANSFORM}`}>
+        <PaddleShape solid="rgba(0,0,0,0.25)" />
+      </g>
+      {/* thickness: a darker copy just below */}
+      <g transform={`translate(0 3) ${PADDLE_TRANSFORM}`}>
+        <PaddleShape solid="#8a4d06" />
+      </g>
+      {/* the paddle itself */}
+      <g transform={PADDLE_TRANSFORM}>
+        <PaddleShape />
+      </g>
+      {/* a pickleball resting next to it */}
+      <circle cx="94" cy="66" r="7.5" fill="rgba(0,0,0,0.25)" transform="translate(2 2)" />
+      {/* same orange-yellow as the paddle, with darker holes */}
+      <circle cx="94" cy="66" r="7.5" fill="#f6a928" stroke="#c06e0c" strokeWidth="1" />
+      {[[94, 62], [90.5, 65], [97.5, 65], [92, 69.5], [96, 69.5]].map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.1" fill="#b4650a" />
+      ))}
+    </svg>
+  )
+}
+
 // The far side of the court, seen THROUGH and above the net. It starts at the
 // bottom of the net and narrows as it goes away from you, fading out at the top.
 // Drawn behind the squares; the empty squares are see-through so it shows.
@@ -178,7 +240,11 @@ export default function PlayCalendar({ players, stats, colors }) {
               <span className="net-post" aria-hidden="true" />
             </div>
 
-            <Court />
+            {/* near court with a paddle lying on it */}
+            <div className="near-court">
+              <Court />
+              <Paddle />
+            </div>
           </div>
         )
       })}

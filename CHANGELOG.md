@@ -6,6 +6,8 @@
 - **Play calendar:** the court now continues on the far side of the net, seen
   through the see-through net and fading into the distance. Sidelines stay one
   continuous straight line across the net at any screen size.
+- **Play calendar:** an orange-yellow paddle with a black handle and a matching
+  ball lying on the court.
 
 ## v0.3.0 (2026-11-05): Notifications & a pickleball makeover 🔔
 

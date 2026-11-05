@@ -388,6 +388,14 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   --court-line: rgba(255, 255, 255, 0.55);
 }
 .court-surface { fill: var(--court-fill); }
+
+/* paddle lying on the near court, off to the right of the center line */
+.near-court { position: relative; }
+.court-paddle {
+  position: absolute; top: -4px; right: 12%;
+  width: 84px; height: 61px;
+  pointer-events: none;
+}
 .court-line { stroke: var(--court-line); stroke-width: 2; fill: none; }
 
 .mini-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
