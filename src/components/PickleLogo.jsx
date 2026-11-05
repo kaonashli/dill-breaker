@@ -1,11 +1,11 @@
-import { useEffect, useId, useRef } from 'react'
+import { useId } from 'react'
 
 // The Dill Breaker pickle: a curved, bumpy green pickle drawn in SVG
 // (same on every device, unlike an emoji). size = height in pixels.
 //
-// When the page first loads it plays a little "breaking a pickle" animation
-// ONCE: a crack appears in the middle, the two halves bend apart, a few drops
-// of pickle juice fly out, and it snaps back whole. (See .pickle-* in index.css.)
+// It plays a little "breaking a pickle" animation on a loop, resting a few
+// seconds between breaks: a crack appears in the middle, the two halves snap
+// apart, pickle juice sprays out, and it springs back whole. (See .pickle-* in index.css.)
 //
 // How the shape is built (viewBox 32x32):
 //   the pickle bends from bottom-left to top-right, bowing toward the bottom-right.
@@ -30,9 +30,6 @@ const CRACK = '0,0.5 13,11.5 15,16 18,16.5 20,21.5 32,31.5'
 const BOTTOM_HALF = `${CRACK} 32,32 0,32`
 const TOP_HALF = `${CRACK} 32,0 0,0`
 
-// Only animate once per page load (not on every page change)
-let playedThisLoad = false
-
 function PickleArt() {
   return (
     <>
@@ -50,11 +47,7 @@ function PickleArt() {
 
 export default function PickleLogo({ size = 26 }) {
   const id = useId()
-  // Decide once, when this logo first appears, whether it should play the animation
-  const animate = useRef(!playedThisLoad).current
-  useEffect(() => {
-    playedThisLoad = true
-  }, [])
+  const animate = true // the break loops forever with a rest in between (see index.css)
 
   const bottomClip = `${id}-bottom`
   const topClip = `${id}-top`

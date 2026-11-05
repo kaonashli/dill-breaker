@@ -3,13 +3,15 @@
 ## Unreleased
 
 ### New
-- **Pickle logo animation:** once per page load, the pickle strains, SNAPS in
-  two with a spray of pickle juice, hangs broken, then springs back whole.
+- **Pickle logo animation:** every 5 seconds, the pickle strains, SNAPS in
+  two with a spray of pickle juice, hangs broken, then springs back whole and
+  rests for a few seconds.
   Skipped for people who turn on "reduce motion".
 
 ### Changed
 - **What's new:** "Back to home" / "Back to log in" links at the top and bottom.
 - **Login page:** a visible "✨ What's new" link inside the card.
+- **Sign out** moved to the bottom of your own profile page (out of settings).
 
 ## v0.4.0 (2026-11-05): Photos, stories & your own paddle 🏓
 

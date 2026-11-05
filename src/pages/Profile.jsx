@@ -15,7 +15,7 @@ import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 
 export default function Profile() {
-  const { user, profile, refreshProfile, saveTheme, isAdmin, signOut } = useAuth()
+  const { user, profile, refreshProfile, saveTheme, isAdmin } = useAuth()
   const { theme } = useTheme()
   const [displayName, setDisplayName] = useState(profile.display_name)
   const [username, setUsername] = useState(profile.username)
@@ -195,11 +195,12 @@ export default function Profile() {
         </form>
       </section>
 
-      {/* Mainly for phones, where the top bar doesn't show these */}
-      <section className="card profile-links">
-        {isAdmin && <Link to="/admin" className="btn btn-block">Admin tools</Link>}
-        <button className="btn btn-block" onClick={signOut}>Sign out</button>
-      </section>
+      {/* Mainly for phones, where the top bar doesn't show it. (Sign out is at the bottom of your profile page.) */}
+      {isAdmin && (
+        <section className="card profile-links">
+          <Link to="/admin" className="btn btn-block">Admin tools</Link>
+        </section>
+      )}
       <p className="muted small app-version">
         Dill Breaker version {CURRENT_VERSION} · <span className="dev-note">still in development</span>
       </p>

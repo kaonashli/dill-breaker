@@ -20,7 +20,7 @@ import { PROFILE_WIDGETS } from '../components/widgets'
 // Stats are shown to yourself, friends and admins.
 export default function PlayerProfile() {
   const { username } = useParams()
-  const { user, hasPermission, isAdmin } = useAuth()
+  const { user, hasPermission, isAdmin, signOut } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState(undefined) // undefined = loading, null = not visible
   const [friendship, setFriendship] = useState(null)
@@ -202,6 +202,11 @@ export default function PlayerProfile() {
         <section className="card">
           <p className="muted">Become friends to see {profile.display_name}'s stats.</p>
         </section>
+      )}
+
+      {/* your own profile: sign out at the very bottom */}
+      {isMe && !previewing && (
+        <button className="btn btn-block sign-out-btn" onClick={signOut}>Sign out</button>
       )}
     </div>
   )
