@@ -138,7 +138,12 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   border-bottom: 1px solid var(--border);
   position: sticky; top: 0; z-index: 20;
 }
-.brand { font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+.brand {
+  font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.auth-brand { display: flex; align-items: center; gap: 0.4rem; }
+.pickle-logo { flex-shrink: 0; }
 .nav-links { display: flex; gap: 0.25rem; flex: 1; }
 .nav-links a {
   color: var(--text-2); text-decoration: none; padding: 0.35rem 0.7rem; border-radius: 8px;

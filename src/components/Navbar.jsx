@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
 import ThemeToggle from './ThemeToggle'
+import PickleLogo from './PickleLogo'
 import { CountBadge, useNotifications } from '../context/NotificationsContext'
 
 export default function Navbar() {
@@ -11,7 +12,7 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <Link to="/" className="brand">
-        <span aria-hidden="true">🥒</span> Dill Breaker
+        <PickleLogo /> Dill Breaker
       </Link>
       {/* desktop-only: on phones the bottom tab bar replaces these */}
       <nav className="nav-links desktop-only">
