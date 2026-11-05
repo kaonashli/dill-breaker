@@ -10,6 +10,7 @@ import { userPlayer } from '../lib/people'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 import { StraightPaddle } from '../components/PaddleArt'
+import Icon from '../components/Icon'
 import PlayCalendar from '../components/widgets/PlayCalendar'
 import { WidgetGrid } from '../components/WidgetBoard'
 import { PROFILE_WIDGETS } from '../components/widgets'
@@ -20,13 +21,17 @@ import { PROFILE_WIDGETS } from '../components/widgets'
 // Stats are shown to yourself, friends and admins.
 export default function PlayerProfile() {
   const { username } = useParams()
-  const { user, hasPermission, isAdmin, signOut } = useAuth()
+  const { user, isAdmin, signOut } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState(undefined) // undefined = loading, null = not visible
   const [friendship, setFriendship] = useState(null)
   const [message, setMessage] = useState(null)
-  // Admins can preview this page the way a friend or a stranger would see it
-  const [viewAs, setViewAs] = useState('admin') // 'admin' | 'friend' | 'stranger'
+  // Admins can switch how they see this page:
+  //   'me'       - like any user: depends on whether you're actually friends
+  //   'friend'   - preview what a friend sees
+  //   'stranger' - preview what a stranger sees
+  //   'admin'    - everything, regardless of friendship (default for admins)
+  const [viewAs, setViewAs] = useState('admin') // admins see everything by default
 
   const load = useCallback(async () => {
     const { data } = await supabase
@@ -71,22 +76,26 @@ export default function PlayerProfile() {
     )
   }
 
-  const previewing = isAdmin && viewAs !== 'admin'
+  // "previewing" = showing someone else's view, so the action buttons are hidden
+  const previewing = isAdmin && (viewAs === 'friend' || viewAs === 'stranger')
   const isMe = profile.id === user.id
   const isFriend = friendship?.status === 'accepted'
   const incoming = friendship?.status === 'pending' && friendship.addressee_id === user.id
   const outgoing = friendship?.status === 'pending' && friendship.requester_id === user.id
-  const canSeeStats = previewing
-    ? viewAs === 'friend'
-    : isMe || isFriend || hasPermission('stats.compare_anyone')
+  // Paddle, "member since", stats, calendar and widgets: only for yourself and friends
+  // (or an admin who picked "Admin" / "Friend" in the View as switch)
+  const canSeeStats =
+    viewAs === 'admin' || viewAs === 'friend' ? true
+      : viewAs === 'stranger' ? false
+        : isMe || isFriend
 
   // "View as" switch, only for admins
   const viewAsBar = isAdmin && (
     <div className="view-as-bar">
-      <span className="muted small">👁 View as</span>
+      <span className="muted small">View as</span>
       <Segmented
         ariaLabel="View this profile as"
-        options={[['admin', 'Admin'], ['friend', 'Friend'], ['stranger', 'Stranger']]}
+        options={[['admin', 'Admin'], ['me', 'Me'], ['friend', 'Friend'], ['stranger', 'Stranger']]}
         value={viewAs}
         onChange={setViewAs}
       />
@@ -149,16 +158,23 @@ export default function PlayerProfile() {
         <div className="profile-name">
           <h1>{profile.display_name}</h1>
           <div className="muted">@{profile.username}</div>
-          <div className="muted small">Member since {memberSince}</div>
+          {/* friends (and you) see more; everyone else just sees photo, name and username */}
+          {canSeeStats && <div className="muted small">Member since {memberSince}</div>}
         </div>
 
         {/* their paddle, in the color they picked */}
-        <div className="profile-paddle">
-          <StraightPaddle colorKey={profile.paddle_color} height={70} title={`${profile.display_name}'s paddle`} />
-        </div>
+        {canSeeStats && (
+          <div className="profile-paddle">
+            <StraightPaddle colorKey={profile.paddle_color} height={70} title={`${profile.display_name}'s paddle`} />
+          </div>
+        )}
 
         {!previewing && <div className="profile-actions">
-          {isMe && <Link to="/profile" className="btn btn-sm">⚙️ Edit profile & settings</Link>}
+          {isMe && (
+            <Link to="/profile" className="btn btn-sm">
+              <Icon name="gear" size={15} /> Edit profile & settings
+            </Link>
+          )}
           {!isMe && isFriend && (
             <>
               <button className="btn btn-sm btn-primary" onClick={compareOnDashboard}>Compare stats</button>
@@ -195,13 +211,10 @@ export default function PlayerProfile() {
 
       {message && <p className={message.type === 'ok' ? 'notice ok' : 'form-error'}>{message.text}</p>}
 
-      {canSeeStats ? (
+      {/* stats, calendar and widgets: only for you, friends and admins */}
+      {canSeeStats && (
         // when previewing, hide "You & them" (that's about the admin, not the friend)
         <ProfileStats player={player} meKey={`user:${user.id}`} isMe={isMe || previewing} />
-      ) : (
-        <section className="card">
-          <p className="muted">Become friends to see {profile.display_name}'s stats.</p>
-        </section>
       )}
 
       {/* your own profile: sign out at the very bottom */}

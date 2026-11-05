@@ -17,8 +17,11 @@
 ### Changed
 - **What's new:** "Back to home" / "Back to log in" links at the top and bottom.
 - **Login page:** a visible "✨ What's new" link inside the card.
+- **Non-friend profiles** show only the photo, name, username and Add friend
+  (no paddle, member-since or stats). Admins still see everything, and the
+  View as switch gains a "Me" option to see a profile as a regular user.
 - **Icons instead of emojis** for the private notes lock, the add-photo camera
-  and the "pick another title" dice.
+  the "pick another title" dice and the settings gear.
 - **Toggle buttons** (Singles / Doubles, Win / Loss / Just for fun, etc.) are
   now equal widths for an even look on desktop.
 - **Sign out** moved to the bottom of your own profile page (out of settings).
