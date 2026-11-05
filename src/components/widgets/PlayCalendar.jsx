@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { dailyCounts, localDateKey } from '../../lib/stats'
 import { LyingPaddles } from '../PaddleArt'
 
@@ -45,14 +45,23 @@ const HOLES = [
   [12, 5.5], [6.5, 9], [17.5, 9], [12, 12], [6.5, 15], [17.5, 15], [12, 18.5],
 ]
 // size: pixels (legend), or leave it out to fill the calendar cell
+// The holes are real see-through holes (cut out with a mask), so whatever is
+// behind the ball shows through them - no dark dots in light mode.
 function Pickleball({ color, size }) {
+  const maskId = useId()
   const sizeProps = size ? { width: size, height: size } : { className: 'day-ball' }
   return (
     <svg {...sizeProps} viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" fill={color} stroke="rgba(0,0,0,0.25)" strokeWidth="1" />
-      {HOLES.map(([cx, cy]) => (
-        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.6" fill="rgba(0,0,0,0.28)" />
-      ))}
+      <defs>
+        {/* white = keep, black = cut out */}
+        <mask id={maskId}>
+          <rect width="24" height="24" fill="white" />
+          {HOLES.map(([cx, cy]) => (
+            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.6" fill="black" />
+          ))}
+        </mask>
+      </defs>
+      <circle cx="12" cy="12" r="11" fill={color} stroke="rgba(0,0,0,0.25)" strokeWidth="1" mask={`url(#${maskId})`} />
     </svg>
   )
 }
@@ -60,14 +69,22 @@ function Pickleball({ color, size }) {
 // The court on the ground in front of the net, drawn in perspective:
 // narrow where it meets the net, wider toward you, fading out (see .net-court CSS).
 // viewBox is 100 wide x 50 deep; "non-scaling-stroke" keeps the lines thin when stretched.
-const KITCHEN_Y = 11 // the non-volley zone ("kitchen") line, close to the net
+const KITCHEN_Y = 21 // the non-volley zone ("kitchen") line, close to the net
 function Court() {
   const lineProps = { className: 'court-line', vectorEffect: 'non-scaling-stroke' }
   // x of the left sideline at a given depth (it slants from x=6 at the net to x=0)
   const leftAt = (y) => 6 - (6 * y) / 50
   return (
     <svg className="net-court" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+      {/* green surround on each side of the court (light mode only, see CSS) */}
+      <polygon className="court-surround" points="0,0 6,0 0,50" />
+      <polygon className="court-surround" points="94,0 100,0 100,50" />
       <polygon className="court-surface" points="6,0 94,0 100,50 0,50" />
+      {/* kitchen (non-volley zone): from the net to the kitchen line, a lighter blue */}
+      <polygon
+        className="court-kitchen"
+        points={`6,0 94,0 ${100 - leftAt(KITCHEN_Y)},${KITCHEN_Y} ${leftAt(KITCHEN_Y)},${KITCHEN_Y}`}
+      />
       <line {...lineProps} x1="6" y1="0" x2="0" y2="50" /> {/* left sideline */}
       <line {...lineProps} x1="94" y1="0" x2="100" y2="50" /> {/* right sideline */}
       <line {...lineProps} x1={leftAt(KITCHEN_Y)} y1={KITCHEN_Y} x2={100 - leftAt(KITCHEN_Y)} y2={KITCHEN_Y} /> {/* kitchen line */}
@@ -86,16 +103,34 @@ function Court() {
 // same over its own measured height (farHeightPx).
 const NEAR_COURT_PX = 56 // keep in sync with .net-court height in index.css
 const FAR_EXTRA_PX = 14 // how far the far court pokes up above the net (.net-far-court top)
-const FAR_KITCHEN_Y = 42 // the far kitchen line, just behind the net (y=50 is the net line)
-function FarCourt({ farHeightPx }) {
+const FAR_KITCHEN_Y = 33 // the far kitchen line, behind the net (y=50 is the net line)
+
+// How far (in pixels) to slide the whole court down under the net so the net sits
+// in the MIDDLE of the two kitchens: half the difference between how deep the far
+// kitchen looks and how deep the near kitchen looks.
+function courtShiftPx(farHeightPx) {
+  const farKitchenPx = ((50 - FAR_KITCHEN_Y) / 50) * farHeightPx
+  const nearKitchenPx = (KITCHEN_Y / 50) * NEAR_COURT_PX
+  return Math.max(0, Math.round((farKitchenPx - nearKitchenPx) / 2)) // whole pixels: no hairline gaps
+}
+
+function FarCourt({ farHeightPx, shiftPx = 0 }) {
   const lineProps = { className: 'court-line', vectorEffect: 'non-scaling-stroke' }
   // where the left sideline ends at the top: same slope as the near court
   const topX = Math.min(45, 6 + (6 * farHeightPx) / NEAR_COURT_PX)
   // x of the left sideline at a given height (x=6 at the net line, y=50)
   const leftAt = (y) => 6 + ((topX - 6) * (50 - y)) / 50
   return (
-    <svg className="net-far-court" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+    <svg className="net-far-court" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true" style={{ transform: `translateY(${shiftPx}px)` }}>
+      {/* green surround on each side of the far court (light mode only, see CSS) */}
+      <polygon className="court-surround" points={`0,0 ${topX},0 6,50 0,50`} />
+      <polygon className="court-surround" points={`${100 - topX},0 100,0 100,50 94,50`} />
       <polygon className="court-surface" points={`${topX},0 ${100 - topX},0 94,50 6,50`} />
+      {/* far kitchen: from the far kitchen line down to the net, a lighter blue */}
+      <polygon
+        className="court-kitchen"
+        points={`${leftAt(FAR_KITCHEN_Y)},${FAR_KITCHEN_Y} ${100 - leftAt(FAR_KITCHEN_Y)},${FAR_KITCHEN_Y} 94,50 6,50`}
+      />
       <line {...lineProps} x1="6" y1="50" x2={topX} y2="0" /> {/* left sideline */}
       <line {...lineProps} x1="94" y1="50" x2={100 - topX} y2="0" /> {/* right sideline */}
       <line {...lineProps} x1={leftAt(FAR_KITCHEN_Y)} y1={FAR_KITCHEN_Y} x2={100 - leftAt(FAR_KITCHEN_Y)} y2={FAR_KITCHEN_Y} /> {/* far kitchen line */}
@@ -121,6 +156,8 @@ export default function PlayCalendar({ players, stats, colors }) {
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+  // slide the court down so the net is centered between the kitchens
+  const shift = courtShiftPx(netHeight + FAR_EXTRA_PX)
   const now = new Date()
   const columns = { gridTemplateColumns: `repeat(${WEEKS}, 1fr)` }
 
@@ -156,7 +193,7 @@ export default function PlayCalendar({ players, stats, colors }) {
             </div>
 
             <div className="net" ref={players[0].key === p.key ? netRef : undefined}>
-              <FarCourt farHeightPx={netHeight + FAR_EXTRA_PX} />
+              <FarCourt farHeightPx={netHeight + FAR_EXTRA_PX} shiftPx={shift} />
               <span className="net-post" aria-hidden="true" />
               <div className="net-body">
                 <div className="net-tape" aria-hidden="true" />
@@ -180,7 +217,7 @@ export default function PlayCalendar({ players, stats, colors }) {
             </div>
 
             {/* near court with a paddle lying on it */}
-            <div className="near-court">
+            <div className="near-court" style={{ transform: `translateY(${shift}px)`, marginBottom: shift }}>
               <Court />
               <LyingPaddles colorKey={p.paddle_color} className="court-paddle" />
             </div>

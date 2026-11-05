@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.4.0 (2026-11-05): Photos, stories & your own paddle 🏓
 
 > **Upgrading?** Run `supabase/migrations/006` and `007` in the Supabase SQL
 > Editor **before** deploying - the app reads the new columns.
@@ -30,6 +30,9 @@
   or as a stranger would see it.
 - **What's new is public:** opens without logging in, linked subtly at the
   bottom of the home page and next to the credit on login / sign-up.
+- **Clickable players in the feed:** every name with an account in "X played
+  ... with Y" (and on the details page) opens that player's profile, where
+  you can add them as a friend. Pickle pals stay plain text.
 
 ### Changed
 - **Log a game / match forms:** the title (required) and description now come
@@ -43,8 +46,12 @@
 - **Play calendar:** the court now continues on the far side of the net, seen
   through the see-through net and fading into the distance. Sidelines stay one
   continuous straight line across the net at any screen size.
-- **Play calendar:** an orange-yellow paddle with a black handle and a matching
-  ball lying on the court.
+- **Play calendar:** two paddles (in your paddle color) and a matching ball
+  lying on the court.
+- **Play calendar court:** bigger, lighter-blue kitchens on both sides with the
+  net centered between them; both halves now match so there's no seam at the
+  net; grassy green on the sides in light mode; a darker court in light mode;
+  and the pickleball holes are truly see-through.
 
 ## v0.3.0 (2026-11-05): Notifications & a pickleball makeover 🔔
 

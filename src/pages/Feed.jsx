@@ -10,7 +10,7 @@ import GamesTabs from '../components/GamesTabs'
 import CourtIcon from '../components/CourtIcon'
 import PhotoCarousel from '../components/PhotoCarousel'
 import {
-  FEED_COLUMNS, MatchGameScores, TeamRows, groupStory, playedSentence, timeAgo,
+  FEED_COLUMNS, MatchGameScores, PlayedLine, TeamRows, groupStory, timeAgo,
 } from '../components/GameSummary'
 
 const PAGE_SIZE = 40 // participant rows per "load more"
@@ -148,7 +148,6 @@ function FeedItem({ item, photos, meId }) {
   const navigate = useNavigate()
   const first = item.games[0]
   const isMatch = Boolean(item.matchId)
-  const { recorder, rest } = playedSentence(item, meId)
   const { title, description } = groupStory(item)
   const detailsUrl = isMatch ? `/activity/match/${item.matchId}` : `/activity/game/${first.id}`
   const extras = first.sex || '' // (indoor/outdoor is shown on the court icon)
@@ -177,7 +176,7 @@ function FeedItem({ item, photos, meId }) {
       <div className="feed-head">
         <Avatar name={first.recorder?.display_name || '?'} url={first.recorder?.avatar_url} size={32} />
         <div className="feed-head-text">
-          <span><strong>{recorder}</strong> {rest}</span>
+          <PlayedLine group={item} meId={meId} />
           <span className="muted small">{timeAgo(first.played_at)}</span>
         </div>
       </div>

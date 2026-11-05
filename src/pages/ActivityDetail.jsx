@@ -9,7 +9,7 @@ import Avatar from '../components/Avatar'
 import CourtIcon from '../components/CourtIcon'
 import { NotesPhotosFields, StoryFields, emptyExtras } from '../components/ExtrasFields'
 import {
-  FEED_COLUMNS, MatchGameScores, TeamRows, groupStory, playedSentence,
+  FEED_COLUMNS, MatchGameScores, PlayedLine, TeamRows, groupStory,
 } from '../components/GameSummary'
 
 // Full details of one game (/activity/game/:id) or match (/activity/match/:id):
@@ -63,7 +63,6 @@ export default function ActivityDetail({ kind }) {
   const first = group.games[0]
   const ownerId = isMatch ? group.match?.recorded_by : first.recorded_by
   const canEdit = ownerId === user.id || isAdmin
-  const { recorder, rest } = playedSentence(group, user.id)
   const { title, description } = groupStory(group)
   const playedOn = new Date(first.played_at).toLocaleString(undefined, {
     weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
@@ -109,7 +108,7 @@ export default function ActivityDetail({ kind }) {
         <div className="feed-head">
           <Avatar name={first.recorder?.display_name || '?'} url={first.recorder?.avatar_url} size={40} />
           <div className="feed-head-text">
-            <span><strong>{recorder}</strong> {rest}</span>
+            <PlayedLine group={group} meId={user.id} />
             <span className="muted small">{playedOn}</span>
           </div>
         </div>

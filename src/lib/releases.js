@@ -5,6 +5,22 @@
 // When you release: add a new entry at the TOP and bump "version" in package.json.
 export const RELEASES = [
   {
+    version: '0.4.0',
+    date: '2026-11-05',
+    title: 'Photos, stories & your own paddle',
+    notes: [
+      'Give your games and matches a title and description. New ones start with a punny title based on the time of day (tap 🎲 for another).',
+      'Add up to 5 photos to a game or match. In the activity feed, swipe sideways to see them all.',
+      'Keep private notes on any game. Only you can ever see them.',
+      'Tap any game in the activity feed to see all the details and photos.',
+      "Tap a player's name in the feed to visit their profile and add them as a friend.",
+      'The feed shows a little court for singles or doubles, indoor or outdoor (with a sun or moon).',
+      'Pick your paddle color in your settings. It shows on your profile and on your play calendar.',
+      'The play calendar court got a makeover: grass on the sides, a lighter kitchen, and a court you can see through the net.',
+      "What's new can now be opened without logging in.",
+    ],
+  },
+  {
     version: '0.3.0',
     date: '2026-11-05',
     title: 'Notifications & a pickleball makeover',

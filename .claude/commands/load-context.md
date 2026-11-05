@@ -58,7 +58,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - No forgot-password flow yet.
 
 ## Status
-- v0.2.0 released 2026-11-05 (see CHANGELOG.md; v0.1.0 on 2026-11-03). The user has run schema.sql and migrations 002-004, and is admin.
+- Current release: v0.4.0 (2026-11-05). Earlier: v0.3.0, v0.2.0 (2026-11-05), v0.1.0 (2026-11-03). See CHANGELOG.md. The user has run schema.sql and migrations 002-007, and is admin.
 - Email confirmation is currently OFF in Supabase (built-in mailer rate limit); custom SMTP (Resend/Gmail) is planned, then turn it back on.
 - GitHub: https://github.com/kaonashli/dill-breaker (branch `main`, tag + release `v0.1.0`). Commit as `kaonashli` / ashley.boily@hotmail.com (set in the repo's local git config). No `gh` CLI installed; releases are created on the GitHub website.
 - Live: https://dill-breaker.netlify.app (Netlify, auto-deploys on push to `main`; config in `netlify.toml`; env vars set in Netlify UI).

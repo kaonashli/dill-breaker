@@ -29,7 +29,45 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
 }
 
-// "Alex played a doubles game with Sam, Jo and Pat" / "You played a 3-game match with Sam"
+// A player's name that links to their profile if they have an account
+// (pickle pals and "You" are plain text). stopPropagation: so clicking the
+// name opens the profile instead of the feed card.
+function PlayerName({ userId, profile, palName, meId, bold = false }) {
+  if (userId && userId === meId) return <strong>You</strong>
+  if (profile?.username) {
+    const name = bold ? <strong>{profile.display_name}</strong> : profile.display_name
+    return (
+      <Link to={`/u/${profile.username}`} className="person-link player-link" onClick={(e) => e.stopPropagation()}>
+        {name}
+      </Link>
+    )
+  }
+  const text = profile?.display_name || palName || 'Someone'
+  return bold ? <strong>{text}</strong> : text
+}
+
+// "Alex played a doubles game with Sam, Jo and Pat", where every name with an
+// account is clickable (opens their profile, where you can add them as a friend)
+export function PlayedLine({ group, meId }) {
+  const first = group.games[0]
+  const what = group.matchId ? `a ${group.games.length}-game match` : `a ${first.game_type} game`
+  const others = first.game_participants.filter((p) => p.user_id !== first.recorded_by)
+
+  return (
+    <span>
+      <PlayerName userId={first.recorded_by} profile={first.recorder} meId={meId} bold /> played {what}
+      {others.length > 0 && ' with '}
+      {others.map((p, i) => (
+        <span key={i}>
+          {i > 0 && (i === others.length - 1 ? ' and ' : ', ')}
+          <PlayerName userId={p.user_id} profile={p.profiles} palName={p.pickle_pals?.name} meId={meId} />
+        </span>
+      ))}
+    </span>
+  )
+}
+
+// Plain-text version (e.g. for labels): "Alex played a doubles game with Sam, Jo and Pat"
 export function playedSentence(group, meId) {
   const first = group.games[0]
   const recorderIsMe = first.recorded_by === meId
