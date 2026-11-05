@@ -45,9 +45,10 @@ function PickleArt() {
   )
 }
 
-export default function PickleLogo({ size = 26 }) {
+// animate: false for small decorative uses (pickle pal badge, pop-ups) so they don't keep snapping
+export default function PickleLogo({ size = 26, animate = true }) {
   const id = useId()
-  const animate = true // the break loops forever with a rest in between (see index.css)
+
 
   const bottomClip = `${id}-bottom`
   const topClip = `${id}-top`

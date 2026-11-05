@@ -153,7 +153,7 @@ export default function ActivityDetail({ kind }) {
 
         {canEdit && !editing && (
           <div className="form-actions detail-actions">
-            <button className="btn btn-sm" onClick={() => setEditing(true)}>✏️ Edit title, description & photos</button>
+            <button className="btn btn-sm" onClick={() => setEditing(true)}><Icon name="pencil" size={15} /> Edit title, description & photos</button>
             {!isMatch && <Link to={`/games/${id}/edit`} className="btn btn-sm">Edit score & players</Link>}
             <button className="btn btn-sm btn-ghost" onClick={handleDelete}>Delete</button>
           </div>

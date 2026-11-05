@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { friendlyError } from '../lib/errors'
+import PickleLogo from './PickleLogo'
 
 const MAX_PALS = 5
 
@@ -68,7 +69,7 @@ export default function PicklePalsPanel({ people }) {
               </>
             ) : (
               <>
-                <span className="avatar avatar-initials pal-badge" aria-hidden="true">🥒</span>
+                <span className="avatar avatar-initials pal-badge" aria-hidden="true"><PickleLogo size={18} animate={false} /></span>
                 <span className="person-name">{pal.name}</span>
                 <button
                   className="btn btn-sm btn-ghost"

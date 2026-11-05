@@ -22,7 +22,9 @@
   View as switch gains a "Me" option to see a profile as a regular user.
 - **Icons instead of emojis** for the private notes lock, the add-photo camera
   the "pick another title" dice, the settings gear, and a filled gold trophy
-  (with a dark outline) in the Won badge.
+  (with a dark outline) in the Won badge. Also the admin shield, edit pencil,
+  test-sound speaker and pickle pal / pop-up pickles; the update banner and
+  login link no longer use emojis. The app is now emoji-free.
 - **Toggle buttons** (Singles / Doubles, Win / Loss / Just for fun, etc.) are
   now equal widths for an even look on desktop.
 - **Sign out** moved to the bottom of your own profile page (out of settings).

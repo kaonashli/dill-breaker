@@ -10,6 +10,27 @@ const PATHS = {
       <path d="M12 15v2" />
     </>
   ),
+  // shield (admin)
+  shield: (
+    <>
+      <path d="M12 3 5 6v5.5c0 4.3 2.9 7.8 7 9.5 4.1-1.7 7-5.2 7-9.5V6l-7-3z" />
+      <path d="M9.5 12l1.8 1.8L15 10" />
+    </>
+  ),
+  // pencil (edit)
+  pencil: (
+    <>
+      <path d="M4 20l1-4.2L15.8 5a2 2 0 0 1 2.8 0l.4.4a2 2 0 0 1 0 2.8L8.2 19 4 20z" />
+      <path d="M14 7l3 3" />
+    </>
+  ),
+  // speaker with sound waves
+  speaker: (
+    <>
+      <path d="M4 9.5h3l4.5-4v13L7 14.5H4z" />
+      <path d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10" />
+    </>
+  ),
   // trophy: cup with handles, stem and base
   trophy: (
     <>

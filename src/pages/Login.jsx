@@ -51,7 +51,7 @@ export default function Login() {
         New here? <Link to="/signup">Create an account</Link>
       </p>
       <p className="auth-whats-new">
-        <Link to="/whats-new">✨ What's new in v{CURRENT_VERSION}</Link>
+        <Link to="/whats-new">What's new in v{CURRENT_VERSION}</Link>
       </p>
     </AuthCard>
   )

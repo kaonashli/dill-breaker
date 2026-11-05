@@ -14,6 +14,7 @@ import { StraightPaddle } from '../components/PaddleArt'
 import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 import ThemeIcon from '../components/ThemeIcon'
+import Icon from '../components/Icon'
 
 export default function Profile() {
   const { user, profile, refreshProfile, saveTheme, isAdmin } = useAuth()
@@ -178,7 +179,7 @@ export default function Profile() {
             />
             Play a paddle-hit sound for new friend requests
           </label>
-          <button className="btn btn-sm" onClick={() => playHit({ force: true })}>🔊 Test sound</button>
+          <button className="btn btn-sm" onClick={() => playHit({ force: true })}><Icon name="speaker" size={15} /> Test sound</button>
         </div>
         <p className="muted small">Saved on this device. Phones on silent mode won't play it.</p>
       </section>

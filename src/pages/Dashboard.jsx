@@ -36,7 +36,7 @@ export default function Dashboard() {
         {/* Small banner after an update, until you open "What's new" or close it */}
         {showUpdate && (
           <div className="update-banner">
-            <span>🎉 Dill Breaker {CURRENT_VERSION} is here!</span>
+            <span>Dill Breaker {CURRENT_VERSION} is here!</span>
             <Link to="/whats-new" className="btn btn-sm btn-primary">See what's new</Link>
             <button
               className="chip-x"

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
 import ThemeToggle from './ThemeToggle'
 import PickleLogo from './PickleLogo'
+import Icon from './Icon'
 import { CountBadge, useNotifications } from '../context/NotificationsContext'
 
 export default function Navbar() {
@@ -28,7 +29,7 @@ export default function Navbar() {
         {/* phones: the tab bar has no Admin tab, so admins get a button up here */}
         {isAdmin && (
           <NavLink to="/admin" className="btn btn-ghost btn-sm mobile-only admin-link" title="Admin tools">
-            🛡️ Admin
+            <Icon name="shield" size={15} /> Admin
           </NavLink>
         )}
         <ThemeToggle />

@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 import { useAuth } from './AuthContext'
 import { playHit, unlockAudio } from '../lib/sound'
 import Avatar from '../components/Avatar'
+import PickleLogo from '../components/PickleLogo'
 
 // Keeps track of incoming friend requests for the logged-in user and shows:
 //   - a count (used for badges)
@@ -171,7 +172,7 @@ function Toasts({ toasts, onDismiss }) {
           {t.person ? (
             <Avatar name={t.person.display_name} url={t.person.avatar_url} size={36} />
           ) : (
-            <span className="toast-icon" aria-hidden="true">🥒</span>
+            <span className="toast-icon" aria-hidden="true"><PickleLogo size={30} animate={false} /></span>
           )}
           <span className="toast-text">{t.text}</span>
           {t.link && (
