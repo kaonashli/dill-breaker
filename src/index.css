@@ -70,7 +70,15 @@
 
 /* ---------- base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
+html {
+  -webkit-text-size-adjust: 100%;  /* stop iOS changing font sizes on rotate */
+  overflow-x: clip;                /* never allow sideways dragging of the page */
+}
 body {
+  overflow-x: clip;
+  overscroll-behavior-y: none;     /* no rubber-band bounce / pull-to-refresh jump */
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100dvh;
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -85,6 +93,8 @@ a { color: var(--accent); }
 code { font-size: 0.85em; }
 
 input, select, button, textarea { font: inherit; color: inherit; }
+/* removes the tap delay / double-tap zoom on buttons and links */
+a, button, input, select, label { touch-action: manipulation; }
 input, select {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -135,7 +145,7 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 }
 .nav-links a:hover { background: var(--surface-2); }
 .nav-links a.active { background: var(--accent-soft); color: var(--text); font-weight: 600; }
-.nav-right { display: flex; align-items: center; gap: 0.5rem; }
+.nav-right { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
 .nav-profile { display: flex; }
 
 /* ---------- buttons ---------- */
@@ -297,12 +307,91 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .admin-table th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
 .admin-table input:not([type='checkbox']) { min-width: 130px; }
 
-/* ---------- small screens ---------- */
+/* reserve space so cards don't jump in size while loading */
+.widget-body { min-height: 140px; }
+.page-switch { margin: -0.5rem 0 1rem; }
+.profile-links { display: flex; flex-direction: column; gap: 0.5rem; }
+
+/* bottom tab bar: hidden on desktop, shown on phones below */
+.bottom-nav { display: none; }
+
+/* ---------- tablets / small laptops ---------- */
 @media (max-width: 900px) {
   .dashboard { grid-template-columns: 1fr; }
 }
-@media (max-width: 520px) {
+
+/* ---------- phones: app-style layout ---------- */
+@media (max-width: 720px) {
+  .desktop-only { display: none !important; }
+
+  /* 16px+ inputs stop iOS from zooming the page when you tap a field */
+  body, input, select { font-size: 16px; }
+  h1 { font-size: 1.35rem; }
+
+  /* slim top bar that respects the notch / status bar */
+  .navbar {
+    flex-wrap: nowrap;
+    padding: calc(0.5rem + env(safe-area-inset-top)) 12px 0.5rem;
+  }
+
+  /* leave room at the bottom for the tab bar */
+  .container {
+    padding: 1rem 12px calc(84px + env(safe-area-inset-bottom));
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-nav a {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    min-height: 56px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-decoration: none;
+    user-select: none;
+  }
+  .bottom-nav a.active { color: var(--accent); font-weight: 600; }
+  .bottom-nav .tab-primary svg {
+    width: 36px; height: 36px; padding: 6px;
+    border-radius: 50%;
+    background: var(--accent); color: var(--accent-text);
+  }
+
+  /* the Log tab replaces these header buttons */
+  .dash-header .actions a.btn { display: none; }
+  .dash-header { margin-bottom: 0.75rem; }
+
+  .card { border-radius: 10px; padding: 0.85rem; }
   .field-row { grid-template-columns: 1fr; }
-  .nav-links { order: 3; width: 100%; }
-  .nav-right { margin-left: auto; }
+  .segmented { display: flex; }
+  .segmented button { flex: 1; padding: 0.6rem 0.5rem; }
+  .btn { min-height: 40px; }
+  .btn-sm { min-height: 34px; }
+
+  /* Save / Cancel stay visible above the tab bar while you scroll a long form */
+  .sticky-actions {
+    position: sticky;
+    bottom: calc(64px + env(safe-area-inset-bottom));
+    z-index: 5;
+    background: var(--bg);
+    margin: 1rem 0 0;
+    padding: 0.75rem 0;
+  }
+  /* inside a card (Log a game), stretch to the card's edges */
+  .card .sticky-actions {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    margin: 1rem -0.85rem -0.85rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0 0 10px 10px;
+  }
+  .sticky-actions .btn { flex: 1; }
+
+  .widget-grid { gap: 0.75rem; }
+  .game-row-actions { width: 100%; justify-content: flex-end; }
 }

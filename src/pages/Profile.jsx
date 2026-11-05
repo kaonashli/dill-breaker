@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -10,7 +11,7 @@ import Avatar from '../components/Avatar'
 import Segmented from '../components/Segmented'
 
 export default function Profile() {
-  const { user, profile, refreshProfile, saveTheme } = useAuth()
+  const { user, profile, refreshProfile, saveTheme, isAdmin, signOut } = useAuth()
   const { theme } = useTheme()
   const [displayName, setDisplayName] = useState(profile.display_name)
   const [username, setUsername] = useState(profile.username)
@@ -133,6 +134,12 @@ export default function Profile() {
             <button className="btn">Change password</button>
           </div>
         </form>
+      </section>
+
+      {/* Mainly for phones, where the top bar doesn't show these */}
+      <section className="card profile-links">
+        {isAdmin && <Link to="/admin" className="btn btn-block">Admin tools</Link>}
+        <button className="btn btn-block" onClick={signOut}>Sign out</button>
       </section>
     </div>
   )

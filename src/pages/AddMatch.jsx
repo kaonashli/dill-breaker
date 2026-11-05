@@ -111,6 +111,9 @@ export default function AddMatch() {
   return (
     <div className="narrow">
       <h1>Log a match</h1>
+      <p className="muted small page-switch">
+        Just one game? <Link to="/games/new">Log a single game</Link>
+      </p>
       <form onSubmit={handleSubmit}>
         <div className="card match-header">
           <label className="field">
@@ -156,7 +159,7 @@ export default function AddMatch() {
         )}
 
         {error && <p className="form-error">{error}</p>}
-        <div className="form-actions">
+        <div className="form-actions sticky-actions">
           <Link to="/" className="btn btn-ghost">Cancel</Link>
           <button className="btn btn-primary" disabled={saving}>
             {saving ? 'Saving...' : 'Save match'}

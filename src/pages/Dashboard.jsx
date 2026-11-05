@@ -39,7 +39,8 @@ export default function Dashboard() {
         <WidgetBoard players={players} />
       </div>
 
-      <aside className="dash-side">
+      {/* On phones this lives in the Friends tab instead */}
+      <aside className="dash-side desktop-only">
         <FriendsPanel people={people} />
         <PicklePalsPanel people={people} />
       </aside>

@@ -108,13 +108,18 @@ export default function AddGame() {
   return (
     <div className="narrow">
       <h1>{isEdit ? 'Edit game' : 'Log a game'}</h1>
+      {!isEdit && (
+        <p className="muted small page-switch">
+          Played several games? <Link to="/matches/new">Log a whole match</Link>
+        </p>
+      )}
       {editingSomeoneElses && (
         <p className="notice">Admin edit: "your" team means the team of the person who logged this game.</p>
       )}
       <form className="card" onSubmit={handleSubmit}>
         <GameFields game={game} onChange={handleChange} people={peopleForSelect} />
         {error && <p className="form-error">{error}</p>}
-        <div className="form-actions">
+        <div className="form-actions sticky-actions">
           <Link to={isEdit ? '/games' : '/'} className="btn btn-ghost">Cancel</Link>
           <button className="btn btn-primary" disabled={saving}>
             {saving ? 'Saving...' : isEdit ? 'Save changes' : 'Save game'}

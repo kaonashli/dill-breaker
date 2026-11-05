@@ -43,7 +43,7 @@ export default function WidgetBoard({ players, refreshToken }) {
   const { user, settings, setSettings } = useAuth()
   const { isDark } = useTheme()
   const colors = chartColors(isDark)
-  const { stats, loading, error } = useStats(players, refreshToken)
+  const { stats, error } = useStats(players, refreshToken)
 
   const widgetIds = (settings?.widgets || DEFAULT_WIDGETS).filter((id) => WIDGETS[id])
   const hidden = Object.keys(WIDGETS).filter((id) => !widgetIds.includes(id))
@@ -90,7 +90,8 @@ export default function WidgetBoard({ players, refreshToken }) {
               const Widget = WIDGETS[id].component
               return (
                 <SortableWidget key={id} id={id} onRemove={() => saveWidgets(widgetIds.filter((w) => w !== id))}>
-                  {loading || !stats ? (
+                  {/* Keep showing the old charts while new data loads, so nothing jumps */}
+                  {!stats ? (
                     <p className="muted">Loading...</p>
                   ) : (
                     <Widget players={players} stats={stats} colors={colors} />

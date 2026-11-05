@@ -11,6 +11,11 @@
   Admins still see everyone.
 
 ### Changed
+- **Mobile layout feels like an app:** bottom tab bar (Home, Games, Log, Friends,
+  Profile), no more zooming when tapping inputs, no sideways dragging or bounce,
+  charts no longer jump while refreshing, and Save stays visible on long forms.
+- **Install to home screen:** opens full-screen with its own icon.
+- **Friends page** (`/friends`) for friends and pickle pals on phones.
 - **Login and sign-up pages** now include a short description of what Dill Breaker is.
 - **Dark mode by default** for first-time visitors and new accounts (`migrations/003`).
   You can still switch to light or system in the top bar or on your Profile.
