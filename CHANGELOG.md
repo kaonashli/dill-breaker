@@ -19,6 +19,7 @@
 - **New notification sound:** a single paddle hit instead of two beeps.
 - **New logo:** a drawn, curved pickle next to "Dill Breaker" in the top bar and
   on the login / sign-up pages (replaces the 🥒 emoji).
+- **Games tab icon** on phones is now a pickleball paddle.
 
 ## v0.2.0 (2026-11-05): Profiles, Activity feed & mobile app feel 📱
 

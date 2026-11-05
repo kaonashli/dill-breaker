@@ -4,12 +4,14 @@ import { CountBadge, useNotifications } from '../context/NotificationsContext'
 // Simple line icons (24x24) so we don't need an icon library
 const ICONS = {
   home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+  // pickleball paddle (tilted) with a small ball
   games: (
     <>
-      <path d="M9 6h12M9 12h12M9 18h12" />
-      <circle cx="4.5" cy="6" r="1" />
-      <circle cx="4.5" cy="12" r="1" />
-      <circle cx="4.5" cy="18" r="1" />
+      <g transform="rotate(35 12 12)">
+        <rect x="6.5" y="1.5" width="11" height="13" rx="5.2" /> {/* paddle face */}
+        <path d="M12 14.5v7" strokeWidth="3" /> {/* handle */}
+      </g>
+      <circle cx="4.2" cy="5" r="1.8" fill="currentColor" stroke="none" /> {/* ball */}
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
