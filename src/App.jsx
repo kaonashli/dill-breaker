@@ -10,6 +10,7 @@ import Profile from './pages/Profile.jsx'
 import Admin from './pages/Admin.jsx'
 import Friends from './pages/Friends.jsx'
 import PlayerProfile from './pages/PlayerProfile.jsx'
+import Feed from './pages/Feed.jsx'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
       {/* Everything inside here requires being logged in */}
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/feed" element={<Feed />} />
         <Route path="/games" element={<Games />} />
         <Route path="/games/new" element={<AddGame />} />
         <Route path="/games/:id/edit" element={<AddGame />} />

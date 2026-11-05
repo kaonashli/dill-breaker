@@ -307,6 +307,38 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .admin-table th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
 .admin-table input:not([type='checkbox']) { min-width: 130px; }
 
+/* ---------- feed ---------- */
+.page-tabs { margin-bottom: 1rem; }
+.tabs a {
+  padding: 0.5rem 0.9rem; color: var(--text-2); text-decoration: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tabs a.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+.feed { list-style: none; padding: 0; margin: 0 0 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.feed-item { display: flex; flex-direction: column; gap: 0.6rem; }
+.feed-head { display: flex; align-items: center; gap: 0.6rem; }
+.feed-head-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.feed-teams { display: flex; flex-direction: column; gap: 0.25rem; }
+.feed-team {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  padding: 0.4rem 0.6rem; border-radius: 8px; background: var(--surface-2); color: var(--text-2);
+}
+.feed-team.winner {
+  color: var(--text); font-weight: 600;
+  background: var(--accent-soft);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+.feed-team.loser { opacity: 0.65; }
+.feed-team-names { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.won-badge {
+  flex-shrink: 0;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem; border-radius: 999px;
+  background: var(--accent); color: var(--accent-text);
+}
+.feed-score { font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.feed-games { display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
+
 /* ---------- player profile page ---------- */
 .profile-head { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .profile-name { flex: 1; min-width: 160px; }
@@ -326,6 +358,8 @@ a.person-link:hover { text-decoration: underline; }
 
 /* bottom tab bar: hidden on desktop, shown on phones below */
 .bottom-nav { display: none; }
+.mobile-only { display: none !important; }
+.admin-link.active { background: var(--accent-soft); }
 
 /* ---------- tablets / small laptops ---------- */
 @media (max-width: 900px) {
@@ -335,6 +369,7 @@ a.person-link:hover { text-decoration: underline; }
 /* ---------- phones: app-style layout ---------- */
 @media (max-width: 720px) {
   .desktop-only { display: none !important; }
+  .mobile-only { display: inline-flex !important; }
 
   /* 16px+ inputs stop iOS from zooming the page when you tap a field */
   body, input, select { font-size: 16px; }

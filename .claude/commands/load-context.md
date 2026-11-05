@@ -19,6 +19,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - `src/context/AuthContext.jsx`: `useAuth()` → `user, profile, permissions, settings, hasPermission(key), isAdmin, refreshProfile, saveTheme, signOut`.
 - `src/context/ThemeContext.jsx`: `useTheme()` → `theme ('light'|'dark'|'system'), setTheme, isDark`.
 - `src/lib/score.js`: score rules (mirror of SQL `is_valid_score`). `src/lib/games.js`: game form ↔ DB rows. `src/lib/stats.js`: widget math. `src/lib/useStats.js`: loads dashboard data. `src/lib/people.js`: `usePeople()` (friends + my pals).
+- `src/components/WidgetBoard.jsx`: `WidgetGrid` (draggable grid; props `settingsKey` = `'widgets'` for home or `'profile_widgets'` for profile pages, `allowed` ids) and default `WidgetBoard` (loads stats, then grid). Profile pages use `PROFILE_WIDGETS` (everything except play_calendar, which is fixed at the top).
 - `src/components/widgets/index.js`: widget registry. A widget is a component taking `{ players, stats, colors }`.
 - `src/lib/colors.js`: chart palette (fixed, colorblind-checked order; charts need hex, not CSS vars). App colors are CSS variables in `src/index.css` (light default, dark via `prefers-color-scheme` and `[data-theme='dark']`).
 - `README.md`, `CHANGELOG.md`: update CHANGELOG with each release.
@@ -40,7 +41,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - Player objects: `{ kind: 'user'|'pal', id, key: 'user:<id>'|'pal:<id>', name }`. Dashboard players also carry a color `slot` (0 = me) that stays fixed per player.
 - Score rules: winner ≥ 11, win by 2, normal finishes 11/15/21, above that only exactly-2 margins (12-10). 14-9 is invalid. Either score may be blank; win/loss is auto when both are entered.
 - Match form: changes to game 1's `game_type, location, sex, partner, opponents` copy to the other games unless that field was edited by hand there (`edited` array).
-- Routes: `/login`, `/signup`, `/` (dashboard), `/games`, `/games/new`, `/games/:id/edit`, `/matches/new`, `/friends`, `/profile` (your settings), `/u/:username` (anyone's profile page: stats shown to self/friends/admin; "Compare stats" navigates to `/` with `state.compare`), `/admin`. Phones use a bottom tab bar (`BottomNav.jsx`); `.desktop-only` hides things below 720px.
+- Routes: `/login`, `/signup`, `/` (dashboard), `/games`, `/games/new`, `/games/:id/edit`, `/matches/new`, `/feed` (games of me + accepted friends, newest first, matches grouped; phone "Games" tab opens it, `GamesTabs` switches to `/games` = My games), `/friends`, `/profile` (your settings), `/u/:username` (anyone's profile page: stats shown to self/friends/admin; "Compare stats" navigates to `/` with `state.compare`), `/admin`. Phones use a bottom tab bar (`BottomNav.jsx`); `.desktop-only` hides things below 720px.
 
 ## Decisions made (defaults; the user may revisit)
 - Doubles allows up to 2 opponents.
@@ -50,6 +51,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - No forgot-password flow yet.
 
 ## Status
-- v0.1.0 released (see CHANGELOG.md). The user has run the schema and set themselves as admin.
+- v0.2.0 released 2026-11-05 (see CHANGELOG.md; v0.1.0 on 2026-11-03). The user has run schema.sql and migrations 002-004, and is admin.
+- Email confirmation is currently OFF in Supabase (built-in mailer rate limit); custom SMTP (Resend/Gmail) is planned, then turn it back on.
 - GitHub: https://github.com/kaonashli/dill-breaker (branch `main`, tag + release `v0.1.0`). Commit as `kaonashli` / ashley.boily@hotmail.com (set in the repo's local git config). No `gh` CLI installed; releases are created on the GitHub website.
 - Live: https://dill-breaker.netlify.app (Netlify, auto-deploys on push to `main`; config in `netlify.toml`; env vars set in Netlify UI).

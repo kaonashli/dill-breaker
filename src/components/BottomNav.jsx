@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 // Simple line icons (24x24) so we don't need an icon library
 const ICONS = {
@@ -41,7 +41,8 @@ function Icon({ name }) {
 
 const TABS = [
   { to: '/', label: 'Home', icon: 'home', end: true },
-  { to: '/games', label: 'Games', icon: 'games', end: true },
+  // opens the friends feed; also lit up on "My games"
+  { to: '/feed', label: 'Games', icon: 'games', alsoActiveOn: ['/games'] },
   { to: '/games/new', label: 'Log', icon: 'plus', primary: true },
   { to: '/friends', label: 'Friends', icon: 'friends' },
   { to: '/profile', label: 'Profile', icon: 'profile' },
@@ -49,10 +50,23 @@ const TABS = [
 
 // App-style tab bar fixed to the bottom of the screen. Only shown on phones (see CSS).
 export default function BottomNav() {
+  const { pathname } = useLocation()
   return (
     <nav className="bottom-nav" aria-label="Main">
       {TABS.map((tab) => (
-        <NavLink key={tab.to} to={tab.to} end={tab.end} className={tab.primary ? 'tab-primary' : ''}>
+        <NavLink
+          key={tab.to}
+          to={tab.to}
+          end={tab.end}
+          className={({ isActive }) =>
+            [
+              tab.primary && 'tab-primary',
+              (isActive || tab.alsoActiveOn?.includes(pathname)) && 'active',
+            ]
+              .filter(Boolean)
+              .join(' ')
+          }
+        >
           <Icon name={tab.icon} />
           <span>{tab.label}</span>
         </NavLink>

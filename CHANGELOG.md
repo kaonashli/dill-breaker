@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.2.0 (2026-11-05): Profiles, Activity feed & mobile app feel 📱
+
+Player profile pages, an activity feed of your friends' games, a phone layout
+that feels like a real app, and tighter privacy.
+
+> **Upgrading from v0.1.0?** Run `supabase/migrations/002`, `003` and `004`
+> in the Supabase SQL Editor, in that order.
 
 ### Security
 - **Friend search can no longer list every user.** Typing `%` or `_` used to match
@@ -11,10 +17,18 @@
   Admins still see everyone.
 
 ### New
+- **Activity feed** (`/feed`): every game and match you or your friends played,
+  newest first. Matches show as one card with the games won by each side and every
+  game's score. The winning side gets a 🏆 **Won** badge and highlight; the losing
+  side is dimmed. Opens from the Games tab (with a switch to "My games") or
+  Activity on desktop.
 - **Player profile pages** (`/u/username`): photo, name, member since, stat tiles
   (games, win %, record, singles/doubles, average points, top partner), your
   head-to-head with them, and their play calendar. Add, accept, or remove friends
   and jump to "Compare stats" right from the page. Click a friend's name to open it.
+  Below the fixed stats and calendar, all the dashboard widgets can be moved,
+  removed and re-added; this layout is saved separately from your home page
+  (`migrations/004`).
 
 ### Changed
 - **Mobile layout feels like an app:** bottom tab bar (Home, Games, Log, Friends,
@@ -22,13 +36,18 @@
   charts no longer jump while refreshing, and Save stays visible on long forms.
 - **Install to home screen:** opens full-screen with its own icon.
 - **Friends page** (`/friends`) for friends and pickle pals on phones.
+- **Admin on phones:** admins get a 🛡️ Admin button in the top bar. Sign out and
+  Admin tools are also at the bottom of the Profile tab.
+- **Games** in the desktop top bar is now **My games**, next to **Activity**.
 - **Login and sign-up pages** now include a short description of what Dill Breaker is.
 - **Dark mode by default** for first-time visitors and new accounts (`migrations/003`).
   You can still switch to light or system in the top bar or on your Profile.
 
-### Deployment
+### Deployment & tooling
 - Live at [dill-breaker.netlify.app](https://dill-breaker.netlify.app). Netlify
   config (`netlify.toml`) handles page refreshes on any URL.
+- VS Code **Run and Debug** configs: Run app, Run on your network (for phones),
+  Debug in Edge / Chrome.
 
 ## v0.1.0 (2026-11-03): First release 🥒
 

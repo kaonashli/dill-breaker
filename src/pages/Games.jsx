@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { GAME_WITH_PLAYERS } from '../lib/games'
 import { friendlyError } from '../lib/errors'
+import GamesTabs from '../components/GamesTabs'
 
 const PAGE_SIZE = 20
 
@@ -80,8 +81,9 @@ export default function Games() {
 
   return (
     <div className="narrow">
+      <GamesTabs />
       <div className="dash-header">
-        <h1>Games</h1>
+        <h1>My games</h1>
         <div className="actions">
           {isAdmin && (
             <label className="toggle">

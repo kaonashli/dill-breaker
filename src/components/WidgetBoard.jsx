@@ -37,16 +37,18 @@ function SortableWidget({ id, onRemove, children }) {
   )
 }
 
-// The dashboard grid: drag to reorder, ✕ to remove, dropdown to add back.
-// The layout is saved to user_settings.widgets.
-export default function WidgetBoard({ players, refreshToken }) {
+// The draggable grid itself, given stats that were already loaded.
+//   settingsKey: which user_settings column stores the layout
+//                ('widgets' = home dashboard, 'profile_widgets' = profile pages)
+//   allowed:     widget ids that may appear on this board
+export function WidgetGrid({ players, stats, settingsKey = 'widgets', allowed = DEFAULT_WIDGETS }) {
   const { user, settings, setSettings } = useAuth()
   const { isDark } = useTheme()
   const colors = chartColors(isDark)
-  const { stats, error } = useStats(players, refreshToken)
 
-  const widgetIds = (settings?.widgets || DEFAULT_WIDGETS).filter((id) => WIDGETS[id])
-  const hidden = Object.keys(WIDGETS).filter((id) => !widgetIds.includes(id))
+  const saved = settings?.[settingsKey]
+  const widgetIds = (Array.isArray(saved) ? saved : allowed).filter((id) => WIDGETS[id] && allowed.includes(id))
+  const hidden = allowed.filter((id) => !widgetIds.includes(id))
 
   // Mouse/touch drag (moves 5px before it counts as a drag) + keyboard (space + arrows)
   const sensors = useSensors(
@@ -55,10 +57,10 @@ export default function WidgetBoard({ players, refreshToken }) {
   )
 
   async function saveWidgets(next) {
-    setSettings((s) => ({ ...s, widgets: next })) // update screen right away
+    setSettings((s) => ({ ...s, [settingsKey]: next })) // update screen right away
     await supabase
       .from('user_settings')
-      .update({ widgets: next, updated_at: new Date().toISOString() })
+      .update({ [settingsKey]: next, updated_at: new Date().toISOString() })
       .eq('user_id', user.id)
   }
 
@@ -80,9 +82,6 @@ export default function WidgetBoard({ players, refreshToken }) {
         </div>
       )}
 
-      {error && <p className="form-error">Couldn't load stats: {error}</p>}
-      {players.length === 0 && <p className="muted">Pick someone to show stats for.</p>}
-
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={widgetIds} strategy={rectSortingStrategy}>
           <div className="widget-grid">
@@ -91,11 +90,7 @@ export default function WidgetBoard({ players, refreshToken }) {
               return (
                 <SortableWidget key={id} id={id} onRemove={() => saveWidgets(widgetIds.filter((w) => w !== id))}>
                   {/* Keep showing the old charts while new data loads, so nothing jumps */}
-                  {!stats ? (
-                    <p className="muted">Loading...</p>
-                  ) : (
-                    <Widget players={players} stats={stats} colors={colors} />
-                  )}
+                  {!stats ? <p className="muted">Loading...</p> : <Widget players={players} stats={stats} colors={colors} />}
                 </SortableWidget>
               )
             })}
@@ -103,5 +98,17 @@ export default function WidgetBoard({ players, refreshToken }) {
         </SortableContext>
       </DndContext>
     </div>
+  )
+}
+
+// Home dashboard version: loads the stats itself, then shows the grid.
+export default function WidgetBoard({ players, refreshToken }) {
+  const { stats, error } = useStats(players, refreshToken)
+  return (
+    <>
+      {error && <p className="form-error">Couldn't load stats: {error}</p>}
+      {players.length === 0 && <p className="muted">Pick someone to show stats for.</p>}
+      <WidgetGrid players={players} stats={stats} />
+    </>
   )
 }

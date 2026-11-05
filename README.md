@@ -1,8 +1,9 @@
 # Dill Breaker 🥒
 
 A pickleball score-keeping app. Log your games and matches, add friends, track
-"pickle pals" who don't have an account, and see your stats on a dashboard you
-can rearrange, side by side with up to four other players.
+"pickle pals" who don't have an account, follow your friends' games in an activity
+feed, and see your stats on a dashboard you can rearrange, side by side with up
+to four other players. Works on desktop and installs like an app on your phone.
 
 **Live app: [dill-breaker.netlify.app](https://dill-breaker.netlify.app)**
 
@@ -15,10 +16,11 @@ Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage), hosted o
 **Accounts**
 - Sign up with email, password, display name, a unique username and an optional profile photo
 - Passwords are handled by Supabase Auth and stored hashed (bcrypt); the app never stores them
-- Light, dark or system theme, saved to your account
+- Light, dark or system theme, saved to your account (dark by default)
 
 **Friends & pickle pals**
-- Search other players by username and send friend requests
+- Search other players by username (matches usernames that start with what you
+  type, min 3 characters) and send friend requests
 - Accept or decline incoming requests, cancel sent ones, unfriend
 - Up to 5 *pickle pals* per account: named players with no login, for friends who'd
   rather not sign up. Only the owner can edit them.
@@ -43,6 +45,25 @@ Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage), hosted o
 
 **Compare** any widget with up to 4 friends or pickle pals at once.
 
+**Player profiles** (`/u/username`)
+- Photo, name, member since, and friend actions (add, accept, remove, compare stats)
+- Fixed at the top: stat tiles (games, win %, record, singles/doubles, average points,
+  top partner), your head-to-head with them, and their play calendar
+- Below that, all the dashboard widgets, which you can rearrange, remove and re-add
+  (one layout for all profiles, saved separately from your home page)
+- Stats are visible to the player, their friends and admins
+
+**Activity feed**
+- Every game and match you and your friends played, newest first
+- Matches appear as one card with games won and each game's score
+- The winning side is marked with a 🏆 Won badge
+
+**Mobile**
+- App-style bottom tab bar: Home, Games (Activity / My games), Log, Friends, Profile
+- No zooming or sideways sliding; Save buttons stay in view on long forms
+- Add to your home screen to open it full-screen like an app
+  (Safari: Share → Add to Home Screen; Chrome: ⋮ → Install app)
+
 **Admin**
 - Edit any user's name, username and roles
 - Manage all pickle pals and all games
@@ -61,8 +82,14 @@ Built with **React (Vite)** and **Supabase** (Postgres, Auth, Storage), hosted o
 1. In your Supabase project, open **SQL Editor → New query**.
 2. Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**.
    This creates the tables, security policies, triggers and the `avatars` storage bucket.
-3. Then run each file in [`supabase/migrations/`](supabase/migrations/) in number order
-   (`002_...`, `003_...`). These are changes made after the first release.
+3. Then run each file in [`supabase/migrations/`](supabase/migrations/) in number order.
+   These are changes made after the first release:
+
+   | File | What it does |
+   |---|---|
+   | `002_private_profiles.sql` | Private profiles + safe username search (`search_users`) |
+   | `003_default_dark_theme.sql` | New accounts start in dark mode |
+   | `004_profile_widgets.sql` | Separate widget layout for profile pages |
 4. Recommended: under **Authentication → Sign In / Providers → Email**, turn on
    **Confirm email** and set a minimum password length of at least 8.
 
@@ -83,7 +110,11 @@ browser; your data is protected by the database's row level security policies.
 npm install
 npm run dev
 ```
-Open http://localhost:5173.
+Open http://localhost:5173. To try it on your phone, run `npm run dev -- --host` and
+open the "Network" address it prints (same Wi-Fi).
+
+In VS Code you can also use **Run and Debug** (Ctrl+Shift+D): *Run app*,
+*Run app (phone on same Wi-Fi)*, or *Debug in Edge / Chrome* for breakpoints.
 
 ### 5. Make yourself an admin
 Sign up in the app, then run this in the Supabase SQL Editor:
@@ -93,7 +124,7 @@ insert into public.user_roles (user_id, role)
 select id, 'admin' from public.profiles where username = 'YOUR_USERNAME';
 ```
 
-Refresh the app and an **Admin** link appears in the top bar.
+Refresh the app and an **Admin** link appears in the top bar (🛡️ Admin on phones).
 
 ---
 
@@ -101,6 +132,9 @@ Refresh the app and an **Admin** link appears in the top bar.
 
 ```
 supabase/schema.sql        Database: tables, security policies, triggers, storage
+supabase/migrations/       Database changes after v0.1.0 (run in number order)
+public/                    App icon + manifest (home screen install)
+.vscode/                   Run and Debug configurations
 src/
   main.jsx                 App entry; wraps the app in router, theme and auth providers
   App.jsx                  Page routes
@@ -109,9 +143,11 @@ src/
     AuthContext.jsx        Logged-in user, profile, permissions, settings
     ThemeContext.jsx       Light / dark / system theme
   pages/                   One file per screen
-    Login, Signup, Dashboard, AddGame, AddMatch, Games, Profile, Admin
-  components/              Reusable UI pieces (game form, friends panel, widget board...)
-    widgets/               Dashboard widgets; register new ones in widgets/index.js
+    Login, Signup, Dashboard, Feed, Games, AddGame, AddMatch,
+    Friends, PlayerProfile (/u/username), Profile (your settings), Admin
+  components/              Reusable UI pieces (game form, friends panel, nav bars...)
+    WidgetBoard.jsx        Draggable widget grid (used on the dashboard and profiles)
+    widgets/               Widgets; register new ones in widgets/index.js
   lib/                     Plain JavaScript helpers
     score.js               Pickleball score rules
     stats.js               Stats math for widgets
@@ -126,7 +162,7 @@ src/
 | Table | Purpose |
 |---|---|
 | `profiles` | One per account: username, display name, avatar |
-| `user_settings` | Theme and dashboard widget layout |
+| `user_settings` | Theme, dashboard widget layout (`widgets`) and profile page layout (`profile_widgets`) |
 | `permissions`, `roles`, `role_permissions`, `user_roles` | Permission system |
 | `friendships` | Friend requests (pending / accepted) |
 | `pickle_pals` | Account-less players, max 5 per owner |

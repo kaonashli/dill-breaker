@@ -9,6 +9,8 @@ import { average, byGameType, companions, winLoss } from '../lib/stats'
 import { userPlayer } from '../lib/people'
 import Avatar from '../components/Avatar'
 import PlayCalendar from '../components/widgets/PlayCalendar'
+import { WidgetGrid } from '../components/WidgetBoard'
+import { PROFILE_WIDGETS } from '../components/widgets'
 
 // Anyone's profile: /u/:username
 // You can see it if it's you, a friend, someone with a pending request, or
@@ -215,6 +217,14 @@ function ProfileStats({ player, meKey, isMe }) {
         <h2>Play calendar</h2>
         <PlayCalendar players={players} stats={stats} colors={colors} />
       </section>
+
+      {/* Your own layout for profile pages: drag, remove and re-add like the dashboard */}
+      <WidgetGrid
+        players={players}
+        stats={stats}
+        settingsKey="profile_widgets"
+        allowed={PROFILE_WIDGETS}
+      />
     </>
   )
 }

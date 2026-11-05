@@ -18,3 +18,6 @@ export const WIDGETS = {
 }
 
 export const DEFAULT_WIDGETS = Object.keys(WIDGETS)
+
+// Profile pages always show the play calendar at the top, so it's not a movable widget there
+export const PROFILE_WIDGETS = DEFAULT_WIDGETS.filter((id) => id !== 'play_calendar')
