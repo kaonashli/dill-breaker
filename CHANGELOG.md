@@ -10,6 +10,12 @@
   people with a pending friend request with you, and players in games you can see.
   Admins still see everyone.
 
+### New
+- **Player profile pages** (`/u/username`): photo, name, member since, stat tiles
+  (games, win %, record, singles/doubles, average points, top partner), your
+  head-to-head with them, and their play calendar. Add, accept, or remove friends
+  and jump to "Compare stats" right from the page. Click a friend's name to open it.
+
 ### Changed
 - **Mobile layout feels like an app:** bottom tab bar (Home, Games, Log, Friends,
   Profile), no more zooming when tapping inputs, no sideways dragging or bounce,

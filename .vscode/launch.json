@@ -1,0 +1,40 @@
+{
+  // Pick one of these in the Run and Debug panel (Ctrl+Shift+D), then press F5.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Just starts the app in a terminal. Open http://localhost:5173 yourself.
+      "name": "Run app",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+    {
+      // Starts the app on your network too, so you can open it on your phone
+      // (use the "Network:" address it prints).
+      "name": "Run app (phone on same Wi-Fi)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev -- --host"
+    },
+    {
+      // Starts the app AND opens Edge with the debugger attached:
+      // breakpoints in your .jsx files will pause the code.
+      "name": "Debug in Edge",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "dev server"
+    },
+    {
+      // Same as above, but in Chrome (only if Chrome is installed).
+      "name": "Debug in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "dev server"
+    }
+  ]
+}

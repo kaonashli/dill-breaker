@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { usePeople, userPlayer } from '../lib/people'
 import ComparePicker from '../components/ComparePicker'
@@ -10,7 +10,11 @@ import PicklePalsPanel from '../components/PicklePalsPanel'
 export default function Dashboard() {
   const { profile } = useAuth()
   const people = usePeople()
-  const [compared, setCompared] = useState([]) // other players being compared
+  const location = useLocation()
+  // Other players being compared. "Compare stats" on a profile page sends one here.
+  const [compared, setCompared] = useState(() =>
+    location.state?.compare ? [{ ...location.state.compare, slot: 1 }] : []
+  )
   const [includeMe, setIncludeMe] = useState(true)
 
   const me = { ...userPlayer(profile), name: 'You', slot: 0 }

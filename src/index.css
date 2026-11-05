@@ -307,6 +307,18 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .admin-table th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
 .admin-table input:not([type='checkbox']) { min-width: 130px; }
 
+/* ---------- player profile page ---------- */
+.profile-head { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.profile-name { flex: 1; min-width: 160px; }
+.profile-name h1 { margin: 0; }
+.profile-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
+.stat-tile { background: var(--surface-2); border-radius: 8px; padding: 0.6rem 0.75rem; min-width: 0; }
+.stat-value { font-size: 1.25rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat-label { font-size: 0.78rem; color: var(--muted); }
+a.person-link { color: inherit; text-decoration: none; }
+a.person-link:hover { text-decoration: underline; }
+
 /* reserve space so cards don't jump in size while loading */
 .widget-body { min-height: 140px; }
 .page-switch { margin: -0.5rem 0 1rem; }

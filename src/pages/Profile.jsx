@@ -78,7 +78,10 @@ export default function Profile() {
 
   return (
     <div className="narrow stack">
-      <h1>Your profile</h1>
+      <div className="dash-header">
+        <h1>Your profile</h1>
+        <Link to={`/u/${profile.username}`} className="btn btn-sm">View my profile page</Link>
+      </div>
       {message && <p className={message.type === 'ok' ? 'notice ok' : 'form-error'}>{message.text}</p>}
 
       <section className="card stack">

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
@@ -122,9 +123,9 @@ export default function FriendsPanel({ people }) {
             {incoming.map((r) => (
               <li key={r.id}>
                 <Avatar name={r.requester.display_name} url={r.requester.avatar_url} size={28} />
-                <span className="person-name">
+                <Link to={`/u/${r.requester.username}`} className="person-name person-link">
                   {r.requester.display_name} <span className="muted">@{r.requester.username}</span>
-                </span>
+                </Link>
                 <button className="btn btn-sm btn-primary" onClick={() => respond(r.id, true)}>Accept</button>
                 <button className="btn btn-sm btn-ghost" onClick={() => respond(r.id, false)}>Decline</button>
               </li>
@@ -140,9 +141,9 @@ export default function FriendsPanel({ people }) {
             {outgoing.map((r) => (
               <li key={r.id}>
                 <Avatar name={r.addressee.display_name} url={r.addressee.avatar_url} size={28} />
-                <span className="person-name">
+                <Link to={`/u/${r.addressee.username}`} className="person-name person-link">
                   {r.addressee.display_name} <span className="muted">@{r.addressee.username}</span>
-                </span>
+                </Link>
                 <button
                   className="btn btn-sm btn-ghost"
                   onClick={() => removeFriendship(r.id, `Cancel your request to ${r.addressee.display_name}?`)}
@@ -161,9 +162,9 @@ export default function FriendsPanel({ people }) {
         {people.friends.map((f) => (
           <li key={f.key}>
             <Avatar name={f.name} url={f.avatar_url} size={28} />
-            <span className="person-name">
+            <Link to={`/u/${f.username}`} className="person-name person-link" title="View profile">
               {f.name} <span className="muted">@{f.username}</span>
-            </span>
+            </Link>
             <button
               className="btn btn-sm btn-ghost"
               title="Remove friend"

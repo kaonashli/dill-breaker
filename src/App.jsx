@@ -9,6 +9,7 @@ import Games from './pages/Games.jsx'
 import Profile from './pages/Profile.jsx'
 import Admin from './pages/Admin.jsx'
 import Friends from './pages/Friends.jsx'
+import PlayerProfile from './pages/PlayerProfile.jsx'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/matches/new" element={<AddMatch />} />
         <Route path="/friends" element={<Friends />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/u/:username" element={<PlayerProfile />} />
         <Route path="/admin" element={<Admin />} />
       </Route>
 

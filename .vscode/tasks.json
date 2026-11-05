@@ -1,0 +1,22 @@
+{
+  // Background task that starts the Vite dev server.
+  // The debug configs in launch.json wait for it to print "Local:" before opening the browser.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev server",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^x^" },
+        "background": {
+          "activesBegin": true,
+          "beginsPattern": "VITE",
+          "endsPattern": "Local:"
+        }
+      }
+    }
+  ]
+}

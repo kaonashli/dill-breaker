@@ -40,7 +40,7 @@ You are working on **Dill Breaker**, a pickleball score-keeping web app. Read th
 - Player objects: `{ kind: 'user'|'pal', id, key: 'user:<id>'|'pal:<id>', name }`. Dashboard players also carry a color `slot` (0 = me) that stays fixed per player.
 - Score rules: winner ≥ 11, win by 2, normal finishes 11/15/21, above that only exactly-2 margins (12-10). 14-9 is invalid. Either score may be blank; win/loss is auto when both are entered.
 - Match form: changes to game 1's `game_type, location, sex, partner, opponents` copy to the other games unless that field was edited by hand there (`edited` array).
-- Routes: `/login`, `/signup`, `/` (dashboard), `/games`, `/games/new`, `/games/:id/edit`, `/matches/new`, `/profile`, `/admin`.
+- Routes: `/login`, `/signup`, `/` (dashboard), `/games`, `/games/new`, `/games/:id/edit`, `/matches/new`, `/friends`, `/profile` (your settings), `/u/:username` (anyone's profile page: stats shown to self/friends/admin; "Compare stats" navigates to `/` with `state.compare`), `/admin`. Phones use a bottom tab bar (`BottomNav.jsx`); `.desktop-only` hides things below 720px.
 
 ## Decisions made (defaults; the user may revisit)
 - Doubles allows up to 2 opponents.

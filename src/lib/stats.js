@@ -48,20 +48,23 @@ export function average(numbers) {
 
 // Everyone this player shared a court with.
 // rowsByGame: { [game_id]: [all participant rows of that game] }
-// Returns [{ key, with, against, winsWith }]
+// Returns [{ key, with, against, winsWith, winsAgainst }]
+//   winsWith    = games won while on the same team
+//   winsAgainst = games this player won while on the other team
 export function companions(playerKey, rows, rowsByGame) {
   const map = {}
   for (const r of rows) {
     for (const other of rowsByGame[r.game_id] || []) {
       const otherKey = rowKey(other)
       if (otherKey === playerKey) continue
-      if (!map[otherKey]) map[otherKey] = { key: otherKey, with: 0, against: 0, winsWith: 0 }
+      if (!map[otherKey]) map[otherKey] = { key: otherKey, with: 0, against: 0, winsWith: 0, winsAgainst: 0 }
       const entry = map[otherKey]
       if (other.team === r.team) {
         entry.with += 1
         if (r.won) entry.winsWith += 1
       } else {
         entry.against += 1
+        if (r.won) entry.winsAgainst += 1
       }
     }
   }
