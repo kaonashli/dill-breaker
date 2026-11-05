@@ -292,8 +292,33 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   --court: #1e3d66; --cord: #07090c; --tape: #e4e4de; --post: #747b85;
 }
 
-.net { display: flex; align-items: stretch; }
-.net-body { flex: 1; min-width: 0; }
+.net { display: flex; align-items: stretch; position: relative; }
+.net-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.net-post { position: relative; z-index: 1; }
+
+/* far side of the court: behind the net, poking out a little above the tape,
+   fading away toward the top */
+.net-far-court {
+  position: absolute; left: 0; right: 0; bottom: 0; top: -14px;
+  width: 100%; height: calc(100% + 14px);
+  z-index: 0; pointer-events: none;
+  --court-fill: rgba(58, 111, 176, 0.22);
+  --court-line: rgba(255, 255, 255, 0.9);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .net-far-court {
+    --court-fill: rgba(57, 135, 229, 0.18);
+    --court-line: rgba(255, 255, 255, 0.45);
+  }
+}
+:root[data-theme='dark'] .net-far-court {
+  --court-fill: rgba(57, 135, 229, 0.18);
+  --court-line: rgba(255, 255, 255, 0.45);
+}
+/* empty days are see-through, so the far court shows through the net */
+.day-square.empty { opacity: 0.55; }
 
 /* posts stick up a little above the tape */
 .net-post {
@@ -331,7 +356,7 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .net-months {
   display: grid; gap: 2px;
   padding: 0 8px; /* line up with the mesh between the posts */
-  font-size: 0.7rem; color: var(--muted); margin-bottom: 6px; white-space: nowrap;
+  font-size: 0.7rem; color: var(--muted); margin-bottom: 16px; white-space: nowrap;
 }
 
 .net-legend { display: flex; align-items: center; gap: 4px; justify-content: flex-end; }

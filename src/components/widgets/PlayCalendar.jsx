@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { dailyCounts, localDateKey } from '../../lib/stats'
 
 const WEEKS = 26 // about 6 months
@@ -74,11 +75,51 @@ function Court() {
   )
 }
 
+// The far side of the court, seen THROUGH and above the net. It starts at the
+// bottom of the net and narrows as it goes away from you, fading out at the top.
+// Drawn behind the squares; the empty squares are see-through so it shows.
+//
+// To make each sideline ONE straight line across the net, the far side must slant
+// at the same rate as the near side. The near court (Court above) moves its
+// sideline 6 units sideways over NEAR_COURT_PX of height, so the far side does the
+// same over its own measured height (farHeightPx).
+const NEAR_COURT_PX = 56 // keep in sync with .net-court height in index.css
+const FAR_EXTRA_PX = 14 // how far the far court pokes up above the net (.net-far-court top)
+const FAR_KITCHEN_Y = 42 // the far kitchen line, just behind the net (y=50 is the net line)
+function FarCourt({ farHeightPx }) {
+  const lineProps = { className: 'court-line', vectorEffect: 'non-scaling-stroke' }
+  // where the left sideline ends at the top: same slope as the near court
+  const topX = Math.min(45, 6 + (6 * farHeightPx) / NEAR_COURT_PX)
+  // x of the left sideline at a given height (x=6 at the net line, y=50)
+  const leftAt = (y) => 6 + ((topX - 6) * (50 - y)) / 50
+  return (
+    <svg className="net-far-court" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+      <polygon className="court-surface" points={`${topX},0 ${100 - topX},0 94,50 6,50`} />
+      <line {...lineProps} x1="6" y1="50" x2={topX} y2="0" /> {/* left sideline */}
+      <line {...lineProps} x1="94" y1="50" x2={100 - topX} y2="0" /> {/* right sideline */}
+      <line {...lineProps} x1={leftAt(FAR_KITCHEN_Y)} y1={FAR_KITCHEN_Y} x2={100 - leftAt(FAR_KITCHEN_Y)} y2={FAR_KITCHEN_Y} /> {/* far kitchen line */}
+      <line {...lineProps} x1="50" y1={FAR_KITCHEN_Y} x2="50" y2="0" /> {/* center line */}
+    </svg>
+  )
+}
+
 // "How often did I play": a grid of days (columns = weeks) framed like a
 // pickleball net - posts on each side and the white tape on top.
 // Darker square = more games that day.
 export default function PlayCalendar({ players, stats, colors }) {
   const weeks = buildWeeks()
+
+  // Measure the net's height (it changes with screen width) so the far court
+  // can line up with the near court. All nets here are the same size, so one is enough.
+  const netRef = useRef(null)
+  const [netHeight, setNetHeight] = useState(150)
+  useEffect(() => {
+    const el = netRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(([entry]) => setNetHeight(entry.contentRect.height))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
   const now = new Date()
   const columns = { gridTemplateColumns: `repeat(${WEEKS}, 1fr)` }
 
@@ -113,7 +154,8 @@ export default function PlayCalendar({ players, stats, colors }) {
               })}
             </div>
 
-            <div className="net">
+            <div className="net" ref={players[0].key === p.key ? netRef : undefined}>
+              <FarCourt farHeightPx={netHeight + FAR_EXTRA_PX} />
               <span className="net-post" aria-hidden="true" />
               <div className="net-body">
                 <div className="net-tape" aria-hidden="true" />
@@ -124,7 +166,7 @@ export default function PlayCalendar({ players, stats, colors }) {
                     const title = `${day.toLocaleDateString()}: ${count} game${count === 1 ? '' : 's'}`
                     // no games: plain square (just net). Played: a pickleball, darker = more games
                     return count === 0 ? (
-                      <span key={i} className="day-square" style={{ background: squareColor(0, colors) }} title={title} />
+                      <span key={i} className="day-square empty" style={{ background: squareColor(0, colors) }} title={title} />
                     ) : (
                       <span key={i} className="day-square" title={title}>
                         <Pickleball color={squareColor(count, colors)} />
@@ -144,7 +186,7 @@ export default function PlayCalendar({ players, stats, colors }) {
       <div className="net-legend muted small">
         Less
         {/* first = no games (plain square), then balls for 1, 2, 3, 4+ games */}
-        <span className="day-square legend-square" style={{ background: colors.heat[0] }} />
+        <span className="day-square empty legend-square" style={{ background: colors.heat[0] }} />
         {colors.heat.slice(1).map((c) => (
           <Pickleball key={c} color={c} size={16} />
         ))}

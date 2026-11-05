@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- **Play calendar:** the court now continues on the far side of the net, seen
+  through the see-through net and fading into the distance. Sidelines stay one
+  continuous straight line across the net at any screen size.
+
 ## v0.3.0 (2026-11-05): Notifications & a pickleball makeover 🔔
 
 > **Upgrading?** Run `supabase/migrations/005` in the Supabase SQL Editor.
