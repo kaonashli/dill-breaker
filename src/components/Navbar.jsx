@@ -32,7 +32,7 @@ export default function Navbar() {
           </NavLink>
         )}
         <ThemeToggle />
-        <Link to="/profile" title="Your profile" className="nav-profile desktop-only">
+        <Link to={`/u/${profile.username}`} title="Your profile" className="nav-profile desktop-only">
           <Avatar name={profile.display_name} url={profile.avatar_url} size={32} />
         </Link>
         <button className="btn btn-ghost btn-sm desktop-only" onClick={signOut}>Sign out</button>

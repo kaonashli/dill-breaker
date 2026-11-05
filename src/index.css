@@ -392,8 +392,8 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 /* paddle lying on the near court, off to the right of the center line */
 .near-court { position: relative; }
 .court-paddle {
-  position: absolute; top: -4px; right: 12%;
-  width: 84px; height: 61px;
+  position: absolute; top: -4px; right: 8%;
+  width: 107px; height: 61px;
   pointer-events: none;
 }
 .court-line { stroke: var(--court-line); stroke-width: 2; fill: none; }

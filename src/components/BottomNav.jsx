@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { CountBadge, useNotifications } from '../context/NotificationsContext'
+import { useAuth } from '../context/AuthContext'
 
 // Simple line icons (24x24) so we don't need an icon library
 const ICONS = {
@@ -42,19 +43,23 @@ function Icon({ name }) {
   )
 }
 
-const TABS = [
-  { to: '/', label: 'Home', icon: 'home', end: true },
-  // opens the friends feed; also lit up on "My games"
-  { to: '/feed', label: 'Games', icon: 'games', alsoActiveOn: ['/games'] },
-  { to: '/games/new', label: 'Log', icon: 'plus', primary: true },
-  { to: '/friends', label: 'Friends', icon: 'friends', showRequests: true },
-  { to: '/profile', label: 'Profile', icon: 'profile' },
-]
-
 // App-style tab bar fixed to the bottom of the screen. Only shown on phones (see CSS).
 export default function BottomNav() {
   const { pathname } = useLocation()
   const { incomingCount } = useNotifications()
+  const { profile } = useAuth()
+  const myProfile = `/u/${profile.username}`
+
+  const TABS = [
+    { to: '/', label: 'Home', icon: 'home', end: true },
+    // opens the activity feed; also lit up on "My games"
+    { to: '/feed', label: 'Games', icon: 'games', alsoActiveOn: ['/games'] },
+    { to: '/games/new', label: 'Log', icon: 'plus', primary: true },
+    { to: '/friends', label: 'Friends', icon: 'friends', showRequests: true },
+    // your profile page; also lit up on the edit profile / settings page
+    { to: myProfile, label: 'Profile', icon: 'profile', alsoActiveOn: ['/profile'] },
+  ]
+
   return (
     <nav className="bottom-nav" aria-label="Main">
       {TABS.map((tab) => (

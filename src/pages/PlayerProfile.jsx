@@ -105,7 +105,7 @@ export default function PlayerProfile() {
         </div>
 
         <div className="profile-actions">
-          {isMe && <Link to="/profile" className="btn btn-sm">Edit profile</Link>}
+          {isMe && <Link to="/profile" className="btn btn-sm">⚙️ Edit profile & settings</Link>}
           {!isMe && isFriend && (
             <>
               <button className="btn btn-sm btn-primary" onClick={compareOnDashboard}>Compare stats</button>

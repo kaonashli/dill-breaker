@@ -79,7 +79,28 @@ function Court() {
 // The paddle is drawn flat (seen from above): face on the left, handle on the right.
 // It's then turned so the face points up and away, and squashed a little for
 // perspective. A darker copy underneath gives it some thickness, plus a shadow.
-const PADDLE_TRANSFORM = 'translate(52 40) scale(1 0.72) rotate(125) translate(-48 -22)'
+// Where a paddle lies: center point, which way it's turned, and how squashed it looks.
+// (read right-to-left: center the drawing, turn it, squash it, move it into place)
+function paddleTransform(cx, cy, angle, squash = 0.72, size = 1) {
+  return `translate(${cx} ${cy}) scale(${size} ${squash * size}) rotate(${angle}) translate(-48 -22)`
+}
+
+// One paddle = shadow + thickness + the paddle itself
+function PaddleLayers({ transform }) {
+  return (
+    <>
+      <g transform={`translate(5 6) ${transform}`}>
+        <PaddleShape solid="rgba(0,0,0,0.25)" />
+      </g>
+      <g transform={`translate(0 3) ${transform}`}>
+        <PaddleShape solid="#8a4d06" />
+      </g>
+      <g transform={transform}>
+        <PaddleShape />
+      </g>
+    </>
+  )
+}
 
 // The paddle outline. solid = draw everything in one color (for the shadow / thickness layers)
 function PaddleShape({ solid }) {
@@ -113,24 +134,18 @@ function PaddleShape({ solid }) {
 
 function Paddle() {
   return (
-    <svg className="court-paddle" viewBox="0 0 110 80" aria-hidden="true">
-      {/* shadow on the court */}
-      <g transform={`translate(5 6) ${PADDLE_TRANSFORM}`}>
-        <PaddleShape solid="rgba(0,0,0,0.25)" />
-      </g>
-      {/* thickness: a darker copy just below */}
-      <g transform={`translate(0 3) ${PADDLE_TRANSFORM}`}>
-        <PaddleShape solid="#8a4d06" />
-      </g>
-      {/* the paddle itself */}
-      <g transform={PADDLE_TRANSFORM}>
-        <PaddleShape />
-      </g>
-      {/* a pickleball resting next to it */}
-      <circle cx="94" cy="66" r="7.5" fill="rgba(0,0,0,0.25)" transform="translate(2 2)" />
-      {/* same orange-yellow as the paddle, with darker holes */}
-      <circle cx="94" cy="66" r="7.5" fill="#f6a928" stroke="#c06e0c" strokeWidth="1" />
-      {[[94, 62], [90.5, 65], [97.5, 65], [92, 69.5], [96, 69.5]].map(([cx, cy]) => (
+    <svg className="court-paddle" viewBox="0 0 140 80" aria-hidden="true">
+      {/* second paddle, dropped a little to the right at a different angle
+          and slightly smaller (it's tucked under the first one) */}
+      <PaddleLayers transform={paddleTransform(101, 42, 106, 0.68, 0.96)} />
+      {/* first paddle, face pointing up toward the net */}
+      <PaddleLayers transform={paddleTransform(52, 40, 125)} />
+
+      {/* a pickleball resting between them: shadow, then the ball */}
+      <circle cx="68" cy="71" r="7.5" fill="rgba(0,0,0,0.25)" transform="translate(2 2)" />
+      {/* same orange-yellow as the paddles, with darker holes */}
+      <circle cx="68" cy="71" r="7.5" fill="#f6a928" stroke="#c06e0c" strokeWidth="1" />
+      {[[68, 67], [64.5, 70], [71.5, 70], [66, 74.5], [70, 74.5]].map(([cx, cy]) => (
         <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.1" fill="#b4650a" />
       ))}
     </svg>
