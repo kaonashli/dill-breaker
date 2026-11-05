@@ -144,6 +144,56 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 }
 .auth-brand { display: flex; align-items: center; gap: 0.4rem; }
 .pickle-logo { flex-shrink: 0; }
+
+/* ---------- pickle logo "break" animation (plays once per page load) ----------
+   Both halves pivot around the crack in the middle and bend toward the belly
+   (like snapping a pickle), juice drops fly out, then it springs back whole. */
+.pickle-half { transform-box: view-box; transform-origin: 16.5px 16.5px; }
+.pickle-break .pickle-half-bottom { animation: pickle-bottom 1.7s cubic-bezier(.3, .7, .3, 1) 0.35s 1 both; }
+.pickle-break .pickle-half-top { animation: pickle-top 1.7s cubic-bezier(.3, .7, .3, 1) 0.35s 1 both; }
+/* a quick strain, then a big SNAP: halves fly apart and bend hard, hang there, then spring back */
+@keyframes pickle-bottom {
+  0%   { transform: none; }
+  8%   { transform: rotate(-4deg); }                                   /* bending... */
+  18%  { transform: translate(-7px, 7px) rotate(-32deg); }                /* SNAP */
+  24%  { transform: translate(-6px, 6px) rotate(-28deg); }              /* little bounce */
+  58%  { transform: translate(-6.5px, 6.5px) rotate(-30deg); }           /* hang broken */
+  80%  { transform: translate(0.4px, -0.4px) rotate(6deg); }           /* spring back past whole */
+  90%  { transform: rotate(-2deg); }
+  100% { transform: none; }
+}
+@keyframes pickle-top {
+  0%   { transform: none; }
+  8%   { transform: rotate(4deg); }
+  18%  { transform: translate(7px, -7px) rotate(32deg); }
+  24%  { transform: translate(6px, -6px) rotate(28deg); }
+  58%  { transform: translate(6.5px, -6.5px) rotate(30deg); }
+  80%  { transform: translate(-0.4px, 0.4px) rotate(-6deg); }
+  90%  { transform: rotate(2deg); }
+  100% { transform: none; }
+}
+.pickle-crack { fill: none; stroke: #2f4f12; stroke-width: 1.1; stroke-linejoin: round; opacity: 0; }
+.pickle-break .pickle-crack { animation: pickle-crack 1.7s ease-in-out 0.35s 1 both; }
+@keyframes pickle-crack {
+  0% { opacity: 0; } 6% { opacity: 1; } 15% { opacity: 1; } 20% { opacity: 0; } 100% { opacity: 0; } /* only while straining */
+}
+/* juice: a bigger spray right at the snap */
+.pickle-drop { fill: #b9e06a; opacity: 0; transform-box: view-box; }
+.pickle-break .pickle-drop-1 { animation: pickle-drop-1 1s ease-out 0.62s 1 both; }
+.pickle-break .pickle-drop-2 { animation: pickle-drop-2 1s ease-out 0.64s 1 both; }
+.pickle-break .pickle-drop-3 { animation: pickle-drop-3 1s ease-out 0.66s 1 both; }
+.pickle-break .pickle-drop-4 { animation: pickle-drop-4 1s ease-out 0.63s 1 both; }
+.pickle-break .pickle-drop-5 { animation: pickle-drop-5 1s ease-out 0.68s 1 both; }
+.pickle-break .pickle-drop-6 { animation: pickle-drop-6 1s ease-out 0.7s 1 both; }
+@keyframes pickle-drop-1 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(-11px, -12px) scale(0.6); } }
+@keyframes pickle-drop-2 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(-14px, 1px) scale(0.6); } }
+@keyframes pickle-drop-3 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(-2px, -15px) scale(0.6); } }
+@keyframes pickle-drop-4 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(-8px, -5px) scale(0.5); } }
+@keyframes pickle-drop-5 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(9px, 10px) scale(0.5); } }
+@keyframes pickle-drop-6 { 0% { opacity: 0; transform: none; } 5% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(4px, -11px) scale(0.5); } }
+@media (prefers-reduced-motion: reduce) {
+  .pickle-break .pickle-half, .pickle-break .pickle-crack, .pickle-break .pickle-drop { animation: none; }
+}
 .nav-links { display: flex; gap: 0.25rem; flex: 1; }
 .nav-links a {
   color: var(--text-2); text-decoration: none; padding: 0.35rem 0.7rem; border-radius: 8px;

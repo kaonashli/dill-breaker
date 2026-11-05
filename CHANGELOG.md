@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### New
+- **Pickle logo animation:** once per page load, the pickle strains, SNAPS in
+  two with a spray of pickle juice, hangs broken, then springs back whole.
+  Skipped for people who turn on "reduce motion".
+
+### Changed
+- **What's new:** "Back to home" / "Back to log in" links at the top and bottom.
+- **Login page:** a visible "✨ What's new" link inside the card.
+
 ## v0.4.0 (2026-11-05): Photos, stories & your own paddle 🏓
 
 > **Upgrading?** Run `supabase/migrations/006` and `007` in the Supabase SQL
