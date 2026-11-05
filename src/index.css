@@ -266,14 +266,99 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 .drag-handle:active { cursor: grabbing; }
 .widget-subhead { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.35rem; flex-wrap: wrap; }
 
-/* heatmap */
-.heat-months, .heatmap { display: grid; gap: 3px; }
-.heat-months { font-size: 0.7rem; color: var(--muted); margin-bottom: 2px; white-space: nowrap; }
-.heatmap { grid-template-rows: repeat(7, auto); grid-auto-flow: column; }
-.heat-cell { display: block; aspect-ratio: 1; border-radius: 2px; min-width: 6px; }
-.heat-cell.blank { background: transparent; }
-.heat-legend { display: flex; align-items: center; gap: 3px; justify-content: flex-end; }
-.heat-legend .heat-cell { width: 11px; }
+/* ---------- play calendar drawn as a pickleball net ---------- */
+.net, .net-legend {
+  --court: #3a6fb0;     /* court blue showing through the holes */
+  --cord: #1b2129;      /* the net's mesh */
+  --tape: #f6f6f1;      /* white tape along the top */
+  --post: #59606a;
+  --ball-light: #f4ff9e;
+  --ball: #cde437;      /* optic yellow-green */
+  --ball-dark: #8faa17;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .net,
+  :root:not([data-theme='light']) .net-legend {
+    --court: #1e3d66; --cord: #07090c; --tape: #e4e4de; --post: #747b85;
+  }
+}
+:root[data-theme='dark'] .net,
+:root[data-theme='dark'] .net-legend {
+  --court: #1e3d66; --cord: #07090c; --tape: #e4e4de; --post: #747b85;
+}
+
+.net { display: flex; align-items: stretch; }
+.net-body { flex: 1; min-width: 0; }
+
+/* posts stick up a little above the tape */
+.net-post {
+  width: 6px; flex-shrink: 0; margin-top: -5px;
+  border-radius: 3px 3px 1px 1px;
+  background: linear-gradient(90deg, #2b3037, var(--post) 50%, #2b3037);
+}
+
+.net-tape {
+  height: 11px; border-radius: 2px;
+  background: var(--tape);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  position: relative; z-index: 1;
+}
+
+/* the grid gap IS the net: its background shows through as cords */
+.net-mesh {
+  display: grid;
+  grid-template-rows: repeat(7, auto);
+  grid-auto-flow: column;
+  gap: 2px; padding: 2px;
+  background: var(--cord);
+}
+.net-hole {
+  aspect-ratio: 1; min-width: 6px;
+  background: var(--court);
+  display: flex; align-items: center; justify-content: center;
+}
+.ball {
+  display: block; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--ball-light), var(--ball) 55%, var(--ball-dark));
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.35);
+}
+
+.net-months {
+  display: grid; gap: 2px;
+  padding: 0 8px; /* line up with the mesh between the posts */
+  font-size: 0.7rem; color: var(--muted); margin-bottom: 6px; white-space: nowrap;
+}
+
+.net-legend { display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.legend-hole { width: 15px; padding: 1px; outline: 2px solid var(--cord); }
+
+/* "squares" version: plain colored day squares between the posts, under the tape */
+.net-mesh.squares { background: transparent; gap: 3px; padding: 4px 4px 2px; }
+.day-square { display: block; aspect-ratio: 1; min-width: 6px; border-radius: 2px; }
+.day-square.blank { background: transparent; }
+.legend-square { width: 11px; }
+.day-ball { display: block; width: 100%; height: 100%; }
+
+/* see-through court on the ground in front of the net, fading toward the viewer */
+.net-court {
+  display: block; width: 100%; height: 56px;
+  --court-fill: rgba(58, 111, 176, 0.28);
+  --court-line: rgba(255, 255, 255, 0.95);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .net-court {
+    --court-fill: rgba(57, 135, 229, 0.22);
+    --court-line: rgba(255, 255, 255, 0.55);
+  }
+}
+:root[data-theme='dark'] .net-court {
+  --court-fill: rgba(57, 135, 229, 0.22);
+  --court-line: rgba(255, 255, 255, 0.55);
+}
+.court-surface { fill: var(--court-fill); }
+.court-line { stroke: var(--court-line); stroke-width: 2; fill: none; }
 
 .mini-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
 .mini-table th, .mini-table td { text-align: right; padding: 0.2rem 0.4rem; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }

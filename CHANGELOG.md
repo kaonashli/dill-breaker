@@ -11,6 +11,13 @@
 - **Sound setting** on your Profile (on/off + test button), saved per device.
 - **Friends** link in the desktop top bar.
 
+### Changed
+- **Play calendar looks like a pickleball net:** white tape across the top, posts
+  on each side, and a see-through court (sidelines, kitchen line, center line)
+  in perspective underneath that fades out. Days you played show a pickleball,
+  darker for more games; empty days are plain squares. The legend uses pickleballs too.
+- **New notification sound:** a single paddle hit instead of two beeps.
+
 ## v0.2.0 (2026-11-05): Profiles, Activity feed & mobile app feel 📱
 
 Player profile pages, an activity feed of your friends' games, a phone layout
