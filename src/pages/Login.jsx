@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { friendlyError } from '../lib/errors'
 import AuthCard from '../components/AuthCard'
+import { CURRENT_VERSION } from '../lib/releases'
 
 export default function Login() {
   const { session } = useAuth()
@@ -48,6 +49,9 @@ export default function Login() {
       </form>
       <p className="auth-switch">
         New here? <Link to="/signup">Create an account</Link>
+      </p>
+      <p className="auth-whats-new">
+        <Link to="/whats-new">✨ What's new in v{CURRENT_VERSION}</Link>
       </p>
     </AuthCard>
   )

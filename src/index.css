@@ -226,6 +226,7 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   padding-bottom: 1rem; border-bottom: 1px solid var(--border);
 }
 .auth-switch { text-align: center; margin-top: 1rem; color: var(--text-2); }
+.auth-whats-new { text-align: center; margin: 0.5rem 0 0; font-size: 0.85rem; }
 .avatar-picker { display: flex; align-items: center; gap: 0.75rem; }
 
 /* ---------- avatars, chips, people ---------- */
